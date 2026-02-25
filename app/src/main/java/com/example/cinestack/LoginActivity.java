@@ -42,13 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize database helper and session manager
         databaseHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
+        setContentView(R.layout.activity_login);
 
-        // Check if user is already logged in
-        if (sessionManager.isLoggedIn()) {
-            // User is logged in, redirect to MainActivity
-            redirectToMainActivity();
-            return;
-        }
+
 
         // Initialize UI components
         initializeViews();
@@ -130,28 +126,24 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Verify credentials with database
-        boolean isValid = databaseHelper.loginUser(username, password);
+        int userId = databaseHelper.getUserId(username, password);
 
-        if (isValid) {
-            // Login successful
-            
-            if (rememberMe) {
-                // Create session to keep user logged in
-                String fullName = databaseHelper.getUserFullName(username);
-                
-                // If user logged in with email, we need to get username
-                // For simplicity, we'll store what they entered
-                sessionManager.createLoginSession(username, fullName, "");
-            }
+        if (userId != -1) {
 
-            // Show success message
+            // Save user_id in SharedPreferences
+            getSharedPreferences("UserSession", MODE_PRIVATE)
+                    .edit()
+                    .putInt("user_id", userId)
+                    .apply();
+
+            // Keep your existing session manager logic
+
+
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
 
-            // Redirect to MainActivity
             redirectToMainActivity();
 
         } else {
-            // Login failed - invalid credentials
             tilPassword.setError("Invalid username/email or password");
             etPassword.requestFocus();
             Toast.makeText(this, "Login failed. Please check your credentials.", Toast.LENGTH_SHORT).show();
