@@ -24,7 +24,7 @@ public class EditMovieActivity extends AppCompatActivity {
         etGenre = findViewById(R.id.etGenre);
         etYear = findViewById(R.id.etYear);
         etReview = findViewById(R.id.etReview);
-        btnUpdate = findViewById(R.id.btnSave);
+        btnUpdate = findViewById(R.id.btnUpdate);
 
         databaseHelper = new DatabaseHelper(this);
 

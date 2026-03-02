@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,26 +26,23 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI Components
     private TextInputLayout tilUsername, tilPassword;
-    private TextInputEditText etUsername, etPassword;
+    private EditText etUsername, etPassword;
     private CheckBox cbRememberMe;
     private Button btnLogin;
     private TextView tvRegisterLink;
 
     // Database Helper and Session Manager
     private DatabaseHelper databaseHelper;
-    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
-        // Initialize database helper and session manager
+        // Initialize database helper (and session manager if you want to keep it)
         databaseHelper = new DatabaseHelper(this);
-        sessionManager = new SessionManager(this);
-        setContentView(R.layout.activity_login);
-
-
+        SessionManager sessionManager = new SessionManager(this); // keep if your project uses it
 
         // Initialize UI components
         initializeViews();
@@ -71,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         // CheckBox and Button
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
-        tvRegisterLink = findViewById(R.id.tvRegisterLink);
+        tvRegisterLink = findViewById(R.id.tvRegister);
     }
 
     /**
@@ -160,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(username)) {
             tilUsername.setError("Username or email is required");
             etUsername.requestFocus();
+
             return false;
         }
 

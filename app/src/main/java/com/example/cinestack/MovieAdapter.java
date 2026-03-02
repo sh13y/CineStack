@@ -82,7 +82,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvTitle = itemView.findViewById(R.id.tvMovieTitle);
             tvGenre = itemView.findViewById(R.id.tvGenre);
             tvYear = itemView.findViewById(R.id.tvYear);
             tvReview = itemView.findViewById(R.id.tvReview);

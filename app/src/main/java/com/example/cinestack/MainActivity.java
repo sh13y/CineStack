@@ -4,17 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import com.google.android.material.appbar.MaterialToolbar;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -25,19 +22,19 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Movie> movieList;
     private DatabaseHelper databaseHelper;
 
+    private EditText searchBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // IMPORTANT: make sure this matches your new XML file name:
+        // If your layout is main.xml -> use R.layout.main
+        // If your layout is activity_main.xml -> use R.layout.activity_main
         setContentView(R.layout.activity_main);
 
-        // Toolbar
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // DB
         databaseHelper = new DatabaseHelper(this);
 
-        // RecyclerView
         recyclerView = findViewById(R.id.recyclerViewMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -45,26 +42,41 @@ public class MainActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter(movieList, this);
         recyclerView.setAdapter(movieAdapter);
 
-        // Add Movie button
         Button btnAddMovie = findViewById(R.id.btnAddMovie);
         btnAddMovie.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, AddMovieActivity.class))
         );
 
+        // New search bar from your new XML
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchMovies(s.toString());
+            }
+
+            @Override public void afterTextChanged(Editable s) {}
+        });
+
         loadMovies();
+    }
+
+    private int getLoggedInUserId() {
+        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
+        return prefs.getInt("user_id", -1);
     }
 
     private void loadMovies() {
         movieList.clear();
 
-        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        int userId = prefs.getInt("user_id", -1);
-
+        int userId = getLoggedInUserId();
         if (userId == -1) return;
 
         Cursor cursor = databaseHelper.getMoviesByUser(userId);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("movie_id"));
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
@@ -74,23 +86,28 @@ public class MainActivity extends AppCompatActivity {
 
                 movieList.add(new Movie(id, title, genre, year, review));
             } while (cursor.moveToNext());
+
+            cursor.close();
         }
 
-        cursor.close();
         movieAdapter.notifyDataSetChanged();
     }
 
     private void searchMovies(String keyword) {
         movieList.clear();
 
-        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        int userId = prefs.getInt("user_id", -1);
-
+        int userId = getLoggedInUserId();
         if (userId == -1) return;
+
+        // if empty -> load all
+        if (keyword == null || keyword.trim().isEmpty()) {
+            loadMovies();
+            return;
+        }
 
         Cursor cursor = databaseHelper.searchMovies(userId, keyword);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("movie_id"));
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
@@ -100,9 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
                 movieList.add(new Movie(id, title, genre, year, review));
             } while (cursor.moveToNext());
+
+            cursor.close();
         }
 
-        cursor.close();
         movieAdapter.notifyDataSetChanged();
     }
 
@@ -112,36 +130,5 @@ public class MainActivity extends AppCompatActivity {
         loadMovies();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        MenuItem item = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) item.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchMovies(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchMovies(newText);
-                return true;
-            }
-        });
-
-        return true;
-    }
-
-    // You wanted: login required every time app opens.
-    // Clearing here is OK (but note: onDestroy is not always guaranteed).
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        prefs.edit().clear().apply();
-    }
 }
