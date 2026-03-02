@@ -1,48 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <!-- Background -->
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/bg_login_cinema"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <EditText
-            android:id="@+id/etTitle"
+    <!-- Dark overlay -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#77000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Movie Title" />
+            android:orientation="vertical"
+            android:padding="26dp"
+            android:gravity="center_horizontal">
 
-        <EditText
-            android:id="@+id/etGenre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Genre" />
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Movie"
+                android:textColor="#E7C26C"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="40dp"/>
 
-        <EditText
-            android:id="@+id/etYear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Release Year"
-            android:inputType="number" />
+            <!-- Movie Title -->
+            <EditText
+                android:id="@+id/etTitle"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_gold"
+                android:hint="Movie Title"
+                android:textColor="#E7C26C"
+                android:textColorHint="#D9B86A"
+                android:padding="16dp"
+                android:inputType="text"
+                android:layout_marginBottom="18dp"
+                android:drawableStart="@android:drawable/ic_media_play"
+                android:drawablePadding="14dp"
+                android:drawableTint="#E7C26C"/>
 
-        <EditText
-            android:id="@+id/etReview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Your Review"
-            android:lines="3" />
+            <!-- Genre -->
+            <EditText
+                android:id="@+id/etGenre"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_gold"
+                android:hint="Genre"
+                android:textColor="#E7C26C"
+                android:textColorHint="#D9B86A"
+                android:padding="16dp"
+                android:inputType="text"
+                android:layout_marginBottom="18dp"
+                android:drawableStart="@android:drawable/ic_menu_gallery"
+                android:drawablePadding="14dp"
+                android:drawableTint="#E7C26C"/>
+
+            <!-- Release Year -->
+            <EditText
+                android:id="@+id/etYear"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_input_gold"
+                android:hint="Release Year"
+                android:textColor="#E7C26C"
+                android:textColorHint="#D9B86A"
+                android:padding="16dp"
+                android:inputType="number"
+                android:layout_marginBottom="18dp"
+                android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                android:drawablePadding="14dp"
+                android:drawableTint="#E7C26C"/>
+
+            <!-- Review -->
+            <EditText
+                android:id="@+id/etReview"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:background="@drawable/bg_search_gold"
+                android:hint="Review"
+                android:textColor="#E7C26C"
+                android:textColorHint="#E7C26C"
+
+                android:paddingLeft="16dp"
 
 
+                android:drawableStart="@android:drawable/ic_menu_edit"
+                android:drawablePadding="14dp"
+                android:drawableTint="#E7C26C"
 
-        <Button
-            android:id="@+id/btnSaveMovie"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save Movie" />
+                android:inputType="text"
+                android:layout_marginBottom="18dp"/>
 
-    </LinearLayout>
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSaveMovie"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Save Movie"
+                android:textColor="#2B1B06"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:background="@drawable/bg_gold_gradient"
+                app:backgroundTint="@null"
+                android:stateListAnimator="@null"/>
 
-</ScrollView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="40dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
