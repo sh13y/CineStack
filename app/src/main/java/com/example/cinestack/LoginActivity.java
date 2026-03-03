@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,30 +26,23 @@ public class LoginActivity extends AppCompatActivity {
 
     // UI Components
     private TextInputLayout tilUsername, tilPassword;
-    private TextInputEditText etUsername, etPassword;
+    private EditText etUsername, etPassword;
     private CheckBox cbRememberMe;
     private Button btnLogin;
     private TextView tvRegisterLink;
 
     // Database Helper and Session Manager
     private DatabaseHelper databaseHelper;
-    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
 
-        // Initialize database helper and session manager
+        // Initialize database helper (and session manager if you want to keep it)
         databaseHelper = new DatabaseHelper(this);
-        sessionManager = new SessionManager(this);
-
-        // Check if user is already logged in
-        if (sessionManager.isLoggedIn()) {
-            // User is logged in, redirect to MainActivity
-            redirectToMainActivity();
-            return;
-        }
+        SessionManager sessionManager = new SessionManager(this); // keep if your project uses it
 
         // Initialize UI components
         initializeViews();
@@ -75,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         // CheckBox and Button
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
-        tvRegisterLink = findViewById(R.id.tvRegisterLink);
+        tvRegisterLink = findViewById(R.id.tvRegister);
     }
 
     /**
@@ -130,28 +124,24 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Verify credentials with database
-        boolean isValid = databaseHelper.loginUser(username, password);
+        int userId = databaseHelper.getUserId(username, password);
 
-        if (isValid) {
-            // Login successful
-            
-            if (rememberMe) {
-                // Create session to keep user logged in
-                String fullName = databaseHelper.getUserFullName(username);
-                
-                // If user logged in with email, we need to get username
-                // For simplicity, we'll store what they entered
-                sessionManager.createLoginSession(username, fullName, "");
-            }
+        if (userId != -1) {
 
-            // Show success message
+            // Save user_id in SharedPreferences
+            getSharedPreferences("UserSession", MODE_PRIVATE)
+                    .edit()
+                    .putInt("user_id", userId)
+                    .apply();
+
+            // Keep your existing session manager logic
+
+
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
 
-            // Redirect to MainActivity
             redirectToMainActivity();
 
         } else {
-            // Login failed - invalid credentials
             tilPassword.setError("Invalid username/email or password");
             etPassword.requestFocus();
             Toast.makeText(this, "Login failed. Please check your credentials.", Toast.LENGTH_SHORT).show();
@@ -168,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(username)) {
             tilUsername.setError("Username or email is required");
             etUsername.requestFocus();
+
             return false;
         }
 
