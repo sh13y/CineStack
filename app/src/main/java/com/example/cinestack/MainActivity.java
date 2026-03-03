@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,17 +23,18 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movieList;
     private DatabaseHelper databaseHelper;
+    private SessionManager sessionManager;
 
     private EditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // IMPORTANT: make sure this matches your new XML file name:
-        // If your layout is main.xml -> use R.layout.main
-        // If your layout is activity_main.xml -> use R.layout.activity_main
         setContentView(R.layout.activity_main);
+
+        // Check if user is logged in
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -130,5 +133,22 @@ public class MainActivity extends AppCompatActivity {
         loadMovies();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_logout) {
+            // Clear movie session data too
+            getSharedPreferences("UserSession", MODE_PRIVATE)
+                    .edit().clear().apply();
+            // Logout and redirect to login
+            sessionManager.logoutUser();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

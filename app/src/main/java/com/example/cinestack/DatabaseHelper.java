@@ -198,6 +198,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return exists;
     }
 
+    /**
+     * Gets user's full name by username
+     * @param username Username to look up
+     * @return User's full name, or null if not found
+     */
+    public String getUserFullName(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + COLUMN_FULL_NAME + " FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_USERNAME + " = ?",
+                new String[]{username.toLowerCase().trim()});
+
+        String fullName = null;
+        if (cursor.moveToFirst()) {
+            fullName = cursor.getString(0);
+        }
+
+        cursor.close();
+        db.close();
+        return fullName;
+    }
+
     // ================= MOVIE METHODS =================
 
     public boolean insertMovie(String title, String genre, int year, String review, int userId) {

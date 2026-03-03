@@ -21,6 +21,7 @@ public class SessionManager {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_FULL_NAME = "fullName";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_USER_ID = "user_id";
 
     // SharedPreferences instance
     private SharedPreferences preferences;
@@ -45,11 +46,12 @@ public class SessionManager {
      * @param fullName User's full name
      * @param email User's email
      */
-    public void createLoginSession(String username, String fullName, String email) {
+    public void createLoginSession(String username, String fullName, String email, int userId) {
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.putString(KEY_USERNAME, username);
         editor.putString(KEY_FULL_NAME, fullName);
         editor.putString(KEY_EMAIL, email);
+        editor.putInt(KEY_USER_ID, userId);
         editor.commit(); // Use commit() instead of apply() to ensure data is saved immediately
     }
 
@@ -83,6 +85,14 @@ public class SessionManager {
      */
     public String getEmail() {
         return preferences.getString(KEY_EMAIL, null);
+    }
+
+    /**
+     * Get logged in user's ID
+     * @return User ID or -1 if not logged in
+     */
+    public int getUserId() {
+        return preferences.getInt(KEY_USER_ID, -1);
     }
 
     /**

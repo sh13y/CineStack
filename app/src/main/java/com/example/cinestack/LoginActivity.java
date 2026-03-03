@@ -33,16 +33,22 @@ public class LoginActivity extends AppCompatActivity {
 
     // Database Helper and Session Manager
     private DatabaseHelper databaseHelper;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
 
-        // Initialize database helper (and session manager if you want to keep it)
+        // Initialize database helper and session manager
         databaseHelper = new DatabaseHelper(this);
-        SessionManager sessionManager = new SessionManager(this); // keep if your project uses it
+        sessionManager = new SessionManager(this);
+
+        // Check if user is already logged in
+        if (sessionManager.isLoggedIn()) {
+            redirectToMainActivity();
+            return;
+        }
 
         // Initialize UI components
         initializeViews();
@@ -128,14 +134,19 @@ public class LoginActivity extends AppCompatActivity {
 
         if (userId != -1) {
 
-            // Save user_id in SharedPreferences
+            // Get user's full name for session
+            String fullName = databaseHelper.getUserFullName(username);
+
+            // Create session to keep user logged in
+            if (rememberMe) {
+                sessionManager.createLoginSession(username, fullName, "", userId);
+            }
+
+            // Also store user_id in UserSession for movie features
             getSharedPreferences("UserSession", MODE_PRIVATE)
                     .edit()
                     .putInt("user_id", userId)
                     .apply();
-
-            // Keep your existing session manager logic
-
 
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
 
