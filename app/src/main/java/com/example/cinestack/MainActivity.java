@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -49,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
         btnAddMovie.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, AddMovieActivity.class))
         );
+
+        // Logout button
+        findViewById(R.id.btnLogout).setOnClickListener(v -> {
+            getSharedPreferences("UserSession", MODE_PRIVATE)
+                    .edit().clear().apply();
+            sessionManager.logoutUser();
+        });
 
         // New search bar from your new XML
         searchBar = findViewById(R.id.searchBar);
@@ -133,22 +138,5 @@ public class MainActivity extends AppCompatActivity {
         loadMovies();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_logout) {
-            // Clear movie session data too
-            getSharedPreferences("UserSession", MODE_PRIVATE)
-                    .edit().clear().apply();
-            // Logout and redirect to login
-            sessionManager.logoutUser();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
