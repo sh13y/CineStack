@@ -49,12 +49,12 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:padding="0dp"
-            app:icon="@android:drawable/ic_menu_close_clear_cancel"
-            app:iconTint="@color/text_secondary"
+            app:icon="@drawable/ic_logout"
+            app:iconTint="@color/error"
             app:iconSize="22dp"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            app:rippleColor="@color/accent_surface"
+            app:rippleColor="@color/error_surface"
             android:contentDescription="Logout" />
 
     </LinearLayout>
