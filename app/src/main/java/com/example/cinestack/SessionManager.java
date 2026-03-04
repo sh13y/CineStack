@@ -22,6 +22,7 @@ public class SessionManager {
     private static final String KEY_FULL_NAME = "fullName";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_USER_ID = "user_id";
+    private static final String KEY_REMEMBER_ME = "rememberMe";
 
     // SharedPreferences instance
     private SharedPreferences preferences;
@@ -53,6 +54,24 @@ public class SessionManager {
         editor.putString(KEY_EMAIL, email);
         editor.putInt(KEY_USER_ID, userId);
         editor.commit(); // Use commit() instead of apply() to ensure data is saved immediately
+    }
+
+    /**
+     * Set remember me preference
+     * When false, session will be cleared on next app launch
+     * @param remember true to persist login across restarts
+     */
+    public void setRememberMe(boolean remember) {
+        editor.putBoolean(KEY_REMEMBER_ME, remember);
+        editor.commit();
+    }
+
+    /**
+     * Check if remember me is enabled
+     * @return true if remember me was selected
+     */
+    public boolean isRememberMe() {
+        return preferences.getBoolean(KEY_REMEMBER_ME, false);
     }
 
     /**

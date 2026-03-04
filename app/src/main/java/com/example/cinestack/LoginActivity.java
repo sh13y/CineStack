@@ -44,10 +44,13 @@ public class LoginActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
 
-        // Check if user is already logged in
-        if (sessionManager.isLoggedIn()) {
+        // Check if user is already logged in with Remember Me
+        if (sessionManager.isLoggedIn() && sessionManager.isRememberMe()) {
             redirectToMainActivity();
             return;
+        } else if (sessionManager.isLoggedIn() && !sessionManager.isRememberMe()) {
+            // Previous session without remember me — clear it
+            sessionManager.clearSession();
         }
 
         // Initialize UI components
@@ -137,9 +140,14 @@ public class LoginActivity extends AppCompatActivity {
             // Get user's full name for session
             String fullName = databaseHelper.getUserFullName(username);
 
-            // Create session to keep user logged in
-            if (rememberMe) {
-                sessionManager.createLoginSession(username, fullName, "", userId);
+            // Always create session so the user stays logged in this run
+            sessionManager.createLoginSession(username, fullName, "", userId);
+
+            // Remember Me controls whether auto-login persists after app restart
+            if (!rememberMe) {
+                sessionManager.setRememberMe(false);
+            } else {
+                sessionManager.setRememberMe(true);
             }
 
             // Also store user_id in UserSession for movie features
