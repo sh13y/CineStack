@@ -1,9 +1,9 @@
-# 🎬 CineStack — Movie Watchlist & Review App
+# 🎬 CineStack - Movie Watchlist & Review App
 
 <div align="center">
 
 **ICT3214 – Mobile Application Development**  
-**Department of Computing — Faculty of Applied Sciences**  
+**Department of Computing - Faculty of Applied Sciences**  
 **Rajarata University of Sri Lanka**
 
 ![Java](https://img.shields.io/badge/Language-Java-orange?logo=java)
@@ -38,7 +38,7 @@
 
 The app allows registered users to maintain a personal **movie watchlist**, add movies they have watched, write **short reviews**, and **search** through their collection. It features a complete **login and registration system** with secure password hashing, persistent sessions, and a cinematic gold-themed UI.
 
-> **Project Category:** 9. Movie Watchlist & Review App — *Focus: Entertainment preferences*
+> **Project Category:** 9. Movie Watchlist & Review App - *Focus: Entertainment preferences*
 
 ---
 
@@ -59,7 +59,7 @@ The app allows registered users to maintain a personal **movie watchlist**, add 
 ### User Authentication
 - Secure **registration** with full input validation
 - **Login** using username or email
-- **SHA-256 password hashing** — passwords are never stored in plain text
+- **SHA-256 password hashing** - passwords are never stored in plain text
 - **"Remember Me"** checkbox with persistent session via SharedPreferences
 - **Auto-login** for returning users (session check on app launch)
 - **Logout** from the overflow menu
@@ -97,10 +97,10 @@ The project strictly follows the module guidelines:
 | Target SDK | 36 |
 
 ### Dependencies
-- `com.google.android.material:material:1.12.0` — Material Design components
-- `androidx.appcompat` — backward-compatible AppCompat
-- `androidx.recyclerview` — RecyclerView for movie list
-- `androidx.constraintlayout` — flexible layouts
+- `com.google.android.material:material:1.12.0` - Material Design components
+- `androidx.appcompat` - backward-compatible AppCompat
+- `androidx.recyclerview` - RecyclerView for movie list
+- `androidx.constraintlayout` - flexible layouts
 
 ---
 
@@ -163,7 +163,7 @@ app/src/main/
 | `title` | TEXT | NOT NULL | Movie title |
 | `genre` | TEXT | NOT NULL | Movie genre |
 | `year` | INTEGER | NOT NULL | Release year |
-| `review` | TEXT | — | User's short review |
+| `review` | TEXT | - | User's short review |
 | `user_id` | INTEGER | NOT NULL, FOREIGN KEY | References `users(id)` ON DELETE CASCADE |
 
 ### Entity Relationship
@@ -187,11 +187,11 @@ app/src/main/
 
 | Feature | Details |
 |---------|---------|
-| **Password Hashing** | SHA-256 via `java.security.MessageDigest` — passwords are hashed before storage and compared as hashes during login |
+| **Password Hashing** | SHA-256 via `java.security.MessageDigest` - passwords are hashed before storage and compared as hashes during login |
 | **SQL Injection Prevention** | All queries use parameterized placeholders (`?`) with `rawQuery()` / `ContentValues` |
 | **Input Validation** | Client-side validation for empty fields, email format, password length (≥ 6), username format (alphanumeric + underscore), and password confirmation match |
 | **Unique Constraints** | Database enforces `UNIQUE` on both `username` and `email` columns |
-| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` — stores login state, username, full name, and user ID |
+| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` - stores login state, username, full name, and user ID |
 | **Session Security** | Session is checked on app launch; unauthorized users are redirected to login; logout clears all session data |
 
 ---
@@ -226,7 +226,7 @@ SessionManager.isLoggedIn()?
 
 ## 🧑‍💻 Individual Contributions
 
-### R P I P P Gotabhaya — Index No: 5664
+### R P I P P Gotabhaya - Index No: 5664
 
 | # | Task | Files |
 |---|------|-------|
@@ -238,7 +238,7 @@ SessionManager.isLoggedIn()?
 | 6 | Session management (SharedPreferences) | `SessionManager.java` |
 | 7 | Auto-login & "Remember Me" functionality | `LoginActivity.java`, `SessionManager.java` |
 
-### P.G.P.W. Gunathilake — Index No: 5662
+### P.G.P.W. Gunathilake - Index No: 5662
 
 | # | Task | Files |
 |---|------|-------|
@@ -247,7 +247,7 @@ SessionManager.isLoggedIn()?
 | 3 | Delete Movie functionality | `MovieAdapter.java` |
 | 4 | RecyclerView implementation for movie list | `MovieAdapter.java`, `Movie.java`, `item_movie.xml` |
 | 5 | Movie search (SQLite LIKE query) | `MainActivity.java`, `DatabaseHelper.java` |
-| 6 | UI/UX design — cinematic gold theme | All layout XMLs, drawable resources |
+| 6 | UI/UX design - cinematic gold theme | All layout XMLs, drawable resources |
 | 7 | Main screen layout & navigation | `activity_main.xml`, `menu_main.xml` |
 
 ---
@@ -311,7 +311,7 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## 📄 License
 
-This project is developed for academic purposes at the Department of Computing, Faculty of Applied Sciences, Rajarata University of Sri Lanka. It is part of the coursework for ICT3214 — Mobile Application Development.
+This project is developed for academic purposes at the Department of Computing, Faculty of Applied Sciences, Rajarata University of Sri Lanka. It is part of the coursework for ICT3214 - Mobile Application Development.
 
 ---
 
@@ -325,7 +325,7 @@ This project is developed for academic purposes at the Department of Computing, 
 
 <div align="center">
 
-**CineStack** — Built with ☕ Java & 🎬 Passion  
-*ICT3214 Group Project — Rajarata University of Sri Lanka*
+**CineStack** - Built with ☕ Java & 🎬 Passion  
+*ICT3214 Group Project - Rajarata University of Sri Lanka*
 
 </div>

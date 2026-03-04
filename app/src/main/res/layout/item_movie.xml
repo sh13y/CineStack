@@ -1,95 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="18dp"
-    android:layout_marginEnd="18dp"
-    android:layout_marginTop="12dp"
-    android:orientation="vertical"
-    android:background="@drawable/bg_card_gold"
-    android:padding="16dp">
-
-    <TextView
-        android:id="@+id/tvMovieTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Movie Title"
-        android:textColor="#E7C26C"
-        android:textStyle="bold"
-        android:textSize="26sp"
-        android:layout_marginBottom="10dp"
-        android:drawableStart="@android:drawable/ic_media_play"
-        android:drawablePadding="14dp"
-        android:drawableTint="#E7C26C"/>
-
-    <TextView
-        android:id="@+id/tvGenre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Genre:"
-        android:textColor="#E7C26C"
-        android:textSize="18sp"
-        android:drawableStart="@android:drawable/ic_menu_gallery"
-        android:drawablePadding="14dp"
-        android:drawableTint="#E7C26C"/>
-
-    <TextView
-        android:id="@+id/tvYear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Year:"
-        android:textColor="#E7C26C"
-        android:textSize="18sp"
-        android:layout_marginTop="6dp"
-        android:drawableStart="@android:drawable/ic_menu_my_calendar"
-        android:drawablePadding="14dp"
-        android:drawableTint="#E7C26C"/>
-
-    <TextView
-        android:id="@+id/tvReview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Review:"
-        android:textColor="#E7C26C"
-        android:textSize="18sp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="14dp"
-        android:drawableStart="@android:drawable/ic_menu_edit"
-        android:drawablePadding="14dp"
-        android:drawableTint="#E7C26C"/>
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="10dp"
+    app:cardBackgroundColor="@color/bg_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:orientation="vertical"
+        android:padding="18dp">
 
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Delete"
+        <!-- Movie Title -->
+        <TextView
+            android:id="@+id/tvMovieTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Movie Title"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_delete_red"
-            app:backgroundTint="@null"/>
+            android:textSize="19sp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="10dp" />
 
+        <!-- Genre -->
+        <TextView
+            android:id="@+id/tvGenre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Genre:"
+            android:textColor="@color/accent_light"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Year -->
+        <TextView
+            android:id="@+id/tvYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Year:"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Review -->
+        <TextView
+            android:id="@+id/tvReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Review:"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="16dp"
+            android:maxLines="3"
+            android:ellipsize="end" />
+
+        <!-- Divider -->
         <View
-            android:layout_width="16dp"
-            android:layout_height="1dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="14dp" />
 
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Edit"
-            android:textStyle="bold"
-            android:textColor="#2B1B06"
-            android:background="@drawable/bg_gold_gradient"
-            app:backgroundTint="@null"/>
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDelete"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Delete"
+                android:textSize="12sp"
+                android:textColor="@color/error"
+                app:strokeColor="@color/error"
+                app:strokeWidth="1dp"
+                app:cornerRadius="10dp"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconTint="@color/error"
+                app:iconSize="16dp"
+                app:rippleColor="@color/error_surface"
+                android:layout_marginEnd="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="Edit"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/accent"
+                app:cornerRadius="10dp"
+                app:icon="@android:drawable/ic_menu_edit"
+                app:iconTint="@color/white"
+                app:iconSize="16dp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

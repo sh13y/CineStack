@@ -1,144 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary"
+    android:fillViewport="true">
 
-    <!-- Background -->
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/bg_login_cinema"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="28dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="32dp"
+        android:gravity="center_horizontal">
 
-    <!-- Dark overlay -->
-    <View
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#77000000"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Movie"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium" />
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add a movie to your watchlist"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="32dp" />
 
-        <LinearLayout
+        <!-- Movie Title -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="26dp"
-            android:gravity="center_horizontal">
+            android:layout_marginBottom="14dp"
+            android:hint="Movie Title"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintTextColor="@color/accent_light"
+            android:textColorHint="@color/text_hint">
 
-            <!-- Title -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Movie"
-                android:textColor="#E7C26C"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                android:layout_marginTop="60dp"
-                android:layout_marginBottom="40dp"/>
-
-            <!-- Movie Title -->
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_input_gold"
-                android:hint="Movie Title"
-                android:textColor="#E7C26C"
-                android:textColorHint="#D9B86A"
-                android:padding="16dp"
+                android:layout_height="wrap_content"
                 android:inputType="text"
-                android:layout_marginBottom="18dp"
-                android:drawableStart="@android:drawable/ic_media_play"
-                android:drawablePadding="14dp"
-                android:drawableTint="#E7C26C"/>
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Genre -->
-            <EditText
+        <!-- Genre -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:hint="Genre"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintTextColor="@color/accent_light"
+            android:textColorHint="@color/text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etGenre"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_input_gold"
-                android:hint="Genre"
-                android:textColor="#E7C26C"
-                android:textColorHint="#D9B86A"
-                android:padding="16dp"
+                android:layout_height="wrap_content"
                 android:inputType="text"
-                android:layout_marginBottom="18dp"
-                android:drawableStart="@android:drawable/ic_menu_gallery"
-                android:drawablePadding="14dp"
-                android:drawableTint="#E7C26C"/>
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Release Year -->
-            <EditText
+        <!-- Release Year -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:hint="Release Year"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintTextColor="@color/accent_light"
+            android:textColorHint="@color/text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etYear"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@drawable/bg_input_gold"
-                android:hint="Release Year"
-                android:textColor="#E7C26C"
-                android:textColorHint="#D9B86A"
-                android:padding="16dp"
+                android:layout_height="wrap_content"
                 android:inputType="number"
-                android:layout_marginBottom="18dp"
-                android:drawableStart="@android:drawable/ic_menu_my_calendar"
-                android:drawablePadding="14dp"
-                android:drawableTint="#E7C26C"/>
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Review -->
-            <EditText
+        <!-- Review -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            android:hint="Review (optional)"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintTextColor="@color/accent_light"
+            android:textColorHint="@color/text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etReview"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:background="@drawable/bg_search_gold"
-                android:hint="Review"
-                android:textColor="#E7C26C"
-                android:textColorHint="#E7C26C"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                android:paddingLeft="16dp"
+        <!-- Save Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveMovie"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Save Movie"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            app:backgroundTint="@color/accent"
+            app:cornerRadius="12dp" />
 
-
-                android:drawableStart="@android:drawable/ic_menu_edit"
-                android:drawablePadding="14dp"
-                android:drawableTint="#E7C26C"
-
-                android:inputType="text"
-                android:layout_marginBottom="18dp"/>
-
-            <!-- Save Button -->
-            <Button
-                android:id="@+id/btnSaveMovie"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="Save Movie"
-                android:textColor="#2B1B06"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:background="@drawable/bg_gold_gradient"
-                app:backgroundTint="@null"
-                android:stateListAnimator="@null"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="40dp"/>
-
-        </LinearLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>
