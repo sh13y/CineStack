@@ -1,163 +1,331 @@
-# 🎬 CineStack - Movie Watchlist & Review App
+# 🎬 CineStack — Movie Watchlist & Review App
+
+<div align="center">
 
 **ICT3214 – Mobile Application Development**  
-**Department of Computing - Faculty of Applied Sciences**  
+**Department of Computing — Faculty of Applied Sciences**  
 **Rajarata University of Sri Lanka**
 
-A Java-based Android application for managing movie watchlists and reviews with secure user authentication.
+![Java](https://img.shields.io/badge/Language-Java-orange?logo=java)
+![Android](https://img.shields.io/badge/Platform-Android-brightgreen?logo=android)
+![SQLite](https://img.shields.io/badge/Database-SQLite-blue?logo=sqlite)
+![API](https://img.shields.io/badge/Min%20SDK-24-yellow)
+
+</div>
 
 ---
 
-## 📱 Features
+## 📋 Table of Contents
 
-### ✅ Implemented (Phase 1)
-- **User Authentication System**
-  - Secure registration with SHA-256 password hashing
-  - Login with username or email
-  - Session management using SharedPreferences
-  - "Remember Me" functionality
-  - Auto-login for returning users
-
-### 🚧 Coming Soon (Phase 2)
-- **Movie Watchlist Management**
-  - Browse and search movies
-  - Add movies to personal watchlist
-  - Mark movies as watched
-  
-- **Rating & Review System**
-  - Rate watched movies (1-5 stars)
-  - Write short reviews
-  - View personal review history
+- [About the Project](#-about-the-project)
+- [Group Members](#-group-members)
+- [Features](#-features)
+- [Technologies & Constraints](#-technologies--constraints)
+- [Project Structure](#-project-structure)
+- [Database Schema](#-database-schema)
+- [Security Implementation](#-security-implementation)
+- [Application Flow](#-application-flow)
+- [Individual Contributions](#-individual-contributions)
+- [Installation & Setup](#-installation--setup)
+- [Screenshots](#-screenshots)
+- [Academic Information](#-academic-information)
 
 ---
 
-## 🛠️ Technologies
+## 📖 About the Project
 
-- **Language:** Java
-- **UI Framework:** XML Layouts (Material Design)
-- **Database:** SQLite with SQLiteOpenHelper
-- **Architecture:** Simple MVC pattern
-- **Security:** SHA-256 password hashing
-- **Session:** SharedPreferences
+**CineStack** is a native Android application developed as the group project for the module **ICT3214 – Mobile Application Development** (Year 3, Semester 1).
+
+The app allows registered users to maintain a personal **movie watchlist**, add movies they have watched, write **short reviews**, and **search** through their collection. It features a complete **login and registration system** with secure password hashing, persistent sessions, and a cinematic gold-themed UI.
+
+> **Project Category:** 9. Movie Watchlist & Review App — *Focus: Entertainment preferences*
+
+---
+
+## 👥 Group Members
+
+| # | Name | Index No. | Registration No. |
+|---|------|-----------|-------------------|
+| 1 | R P I P P Gotabhaya | 5664 | ICT/2022/058 |
+| 2 | P.G.P.W. Gunathilake | 5662 | ICT/2022/056 |
+
+**Batch:** 21/22  
+**Academic Year:** 2026
+
+---
+
+## ✅ Features
+
+### User Authentication
+- Secure **registration** with full input validation
+- **Login** using username or email
+- **SHA-256 password hashing** — passwords are never stored in plain text
+- **"Remember Me"** checkbox with persistent session via SharedPreferences
+- **Auto-login** for returning users (session check on app launch)
+- **Logout** from the overflow menu
+
+### Movie Watchlist (CRUD)
+- **Add** movies with title, genre, year, and review
+- **View** personal watchlist in a scrollable RecyclerView
+- **Edit** movie details (title, genre, year, review)
+- **Delete** movies from the watchlist
+
+### Search
+- **Real-time search** by movie title using SQLite `LIKE` query
+- Instant filtering as the user types
+
+### UI / UX
+- Cinematic **gold-themed** Material Design layouts
+- Custom drawables and gradient backgrounds
+- Responsive XML layouts with proper input validation feedback
+
+---
+
+## 🛠 Technologies & Constraints
+
+The project strictly follows the module guidelines:
+
+| Requirement | Implementation |
+|-------------|----------------|
+| Language | **Java** (no Kotlin) |
+| UI | **XML Layouts** (no Jetpack Compose) |
+| Database | **SQLiteOpenHelper** (no Room, no Firebase) |
+| Session | **SharedPreferences** |
+| Security | **SHA-256** password hashing |
+| Architecture | Simple activity-based (no MVVM) |
+| Min SDK | 24 (Android 7.0) |
+| Target SDK | 36 |
+
+### Dependencies
+- `com.google.android.material:material:1.12.0` — Material Design components
+- `androidx.appcompat` — backward-compatible AppCompat
+- `androidx.recyclerview` — RecyclerView for movie list
+- `androidx.constraintlayout` — flexible layouts
 
 ---
 
 ## 📂 Project Structure
 
 ```
-CineStack/
-├── app/src/main/java/com/example/cinestack/
-│   ├── DatabaseHelper.java       # SQLite database management
-│   ├── SessionManager.java       # Login session handling
-│   ├── LoginActivity.java        # User login screen
-│   ├── RegisterActivity.java    # User registration screen
-│   └── MainActivity.java         # Main application screen
-├── app/src/main/res/layout/
-│   ├── activity_login.xml        # Login UI
-│   ├── activity_register.xml    # Registration UI
-│   └── activity_main.xml         # Main screen UI
-└── app/src/main/AndroidManifest.xml
+app/src/main/
+├── java/com/example/cinestack/
+│   ├── DatabaseHelper.java        # SQLite database (Users + Movies tables)
+│   ├── SessionManager.java        # Login session handling (SharedPreferences)
+│   ├── LoginActivity.java         # User login screen & authentication
+│   ├── RegisterActivity.java      # User registration with validation
+│   ├── MainActivity.java          # Movie watchlist (RecyclerView + search)
+│   ├── AddMovieActivity.java      # Add new movie form
+│   ├── EditMovieActivity.java     # Edit existing movie details
+│   ├── Movie.java                 # Movie data model (POJO)
+│   └── MovieAdapter.java          # RecyclerView adapter for movie cards
+│
+├── res/layout/
+│   ├── activity_login.xml         # Login screen layout
+│   ├── activity_register.xml      # Registration screen layout
+│   ├── activity_main.xml          # Main watchlist screen layout
+│   ├── activity_add_movie.xml     # Add movie form layout
+│   ├── activity_edit_movie.xml    # Edit movie form layout
+│   └── item_movie.xml             # Movie card item for RecyclerView
+│
+├── res/drawable/                   # Custom gold-themed drawables & backgrounds
+├── res/menu/
+│   └── menu_main.xml             # Overflow menu (logout)
+├── res/values/
+│   ├── colors.xml                # App color palette
+│   └── ids.xml                   # View ID declarations
+│
+└── AndroidManifest.xml            # Activity declarations & launcher config
 ```
 
 ---
 
-## 🔐 Security Features
+## 🗄 Database Schema
 
-- ✅ **SHA-256 Password Hashing** - Passwords never stored in plain text
-- ✅ **Input Validation** - Comprehensive client-side validation
-- ✅ **SQL Injection Prevention** - Parameterized queries
-- ✅ **Unique Constraints** - Prevents duplicate usernames/emails
-- ✅ **Session Security** - Secure SharedPreferences implementation
+**Database Name:** `CineStack.db`  
+**Database Version:** 3
+
+### Users Table
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | INTEGER | PRIMARY KEY, AUTOINCREMENT | Unique user identifier |
+| `username` | TEXT | NOT NULL, UNIQUE | Login username (stored lowercase) |
+| `email` | TEXT | NOT NULL, UNIQUE | User email address (stored lowercase) |
+| `password` | TEXT | NOT NULL | SHA-256 hashed password |
+| `full_name` | TEXT | NOT NULL | User's display name |
+| `created_at` | TEXT | NOT NULL | Registration timestamp |
+
+### Movies Table
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `movie_id` | INTEGER | PRIMARY KEY, AUTOINCREMENT | Unique movie identifier |
+| `title` | TEXT | NOT NULL | Movie title |
+| `genre` | TEXT | NOT NULL | Movie genre |
+| `year` | INTEGER | NOT NULL | Release year |
+| `review` | TEXT | — | User's short review |
+| `user_id` | INTEGER | NOT NULL, FOREIGN KEY | References `users(id)` ON DELETE CASCADE |
+
+### Entity Relationship
+
+```
+┌──────────┐        ┌──────────┐
+│  USERS   │ 1────M │  MOVIES  │
+│──────────│        │──────────│
+│ id (PK)  │◄───────│ user_id  │
+│ username │        │ movie_id │
+│ email    │        │ title    │
+│ password │        │ genre    │
+│ full_name│        │ year     │
+│ created  │        │ review   │
+└──────────┘        └──────────┘
+```
 
 ---
 
-## 🗄️ Database Schema
+## 🔐 Security Implementation
 
-### Users Table
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY, AUTOINCREMENT |
-| username | TEXT | NOT NULL, UNIQUE |
-| email | TEXT | NOT NULL, UNIQUE |
-| password | TEXT | NOT NULL (SHA-256 hashed) |
-| full_name | TEXT | NOT NULL |
-| created_at | TEXT | NOT NULL |
+| Feature | Details |
+|---------|---------|
+| **Password Hashing** | SHA-256 via `java.security.MessageDigest` — passwords are hashed before storage and compared as hashes during login |
+| **SQL Injection Prevention** | All queries use parameterized placeholders (`?`) with `rawQuery()` / `ContentValues` |
+| **Input Validation** | Client-side validation for empty fields, email format, password length (≥ 6), username format (alphanumeric + underscore), and password confirmation match |
+| **Unique Constraints** | Database enforces `UNIQUE` on both `username` and `email` columns |
+| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` — stores login state, username, full name, and user ID |
+| **Session Security** | Session is checked on app launch; unauthorized users are redirected to login; logout clears all session data |
+
+---
+
+## 🔄 Application Flow
+
+```
+App Launch
+    │
+    ▼
+SessionManager.isLoggedIn()?
+    │
+    ├── YES ──► MainActivity (Watchlist)
+    │               │
+    │               ├── View movies (RecyclerView)
+    │               ├── Search movies (real-time)
+    │               ├── Add Movie ──► AddMovieActivity
+    │               ├── Edit Movie ──► EditMovieActivity
+    │               ├── Delete Movie
+    │               └── Logout ──► LoginActivity
+    │
+    └── NO ───► LoginActivity
+                    │
+                    ├── Login (username/email + password)
+                    │       └── SHA-256 hash → compare with DB
+                    │
+                    └── Register ──► RegisterActivity
+                            └── Validate → Hash password → Insert to DB
+```
+
+---
+
+## 🧑‍💻 Individual Contributions
+
+### R P I P P Gotabhaya — Index No: 5664
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | Database schema design (Users & Movies tables) | `DatabaseHelper.java` |
+| 2 | SQLiteOpenHelper implementation | `DatabaseHelper.java` |
+| 3 | User registration system with input validation | `RegisterActivity.java`, `activity_register.xml` |
+| 4 | Secure password hashing (SHA-256) | `DatabaseHelper.java` |
+| 5 | Login system with username/email authentication | `LoginActivity.java`, `activity_login.xml` |
+| 6 | Session management (SharedPreferences) | `SessionManager.java` |
+| 7 | Auto-login & "Remember Me" functionality | `LoginActivity.java`, `SessionManager.java` |
+
+### P.G.P.W. Gunathilake — Index No: 5662
+
+| # | Task | Files |
+|---|------|-------|
+| 1 | Add Movie functionality | `AddMovieActivity.java`, `activity_add_movie.xml` |
+| 2 | Edit Movie functionality | `EditMovieActivity.java`, `activity_edit_movie.xml` |
+| 3 | Delete Movie functionality | `MovieAdapter.java` |
+| 4 | RecyclerView implementation for movie list | `MovieAdapter.java`, `Movie.java`, `item_movie.xml` |
+| 5 | Movie search (SQLite LIKE query) | `MainActivity.java`, `DatabaseHelper.java` |
+| 6 | UI/UX design — cinematic gold theme | All layout XMLs, drawable resources |
+| 7 | Main screen layout & navigation | `activity_main.xml`, `menu_main.xml` |
 
 ---
 
 ## 🚀 Installation & Setup
 
 ### Prerequisites
+
 - Android Studio (Arctic Fox or later)
-- Android SDK (API Level 21+)
-- Java Development Kit (JDK 8+)
+- Android SDK (API Level 24+)
+- Java Development Kit (JDK 11+)
 
 ### Steps
-1. Clone the repository:
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/sh13y/CineStack.git
    ```
 
-2. Open project in Android Studio
+2. **Open** the project in Android Studio.
 
-3. Sync Gradle files
+3. **Sync** Gradle files (Android Studio will prompt automatically).
 
-4. Run on emulator or physical device
+4. **Run** on an emulator or physical device (min API 24).
 
 ### Building APK
+
 ```bash
 ./gradlew assembleDebug
 ```
-APK will be generated at: `app/build/outputs/apk/debug/app-debug.apk`
 
----
-
-## 👥 Team Contributions
-
-### My Responsibilities ✅
-1. ✅ Database schema design
-2. ✅ SQLiteOpenHelper implementation
-3. ✅ Users table with secure password hashing
-4. ✅ Registration system with validation
-5. ✅ Login system with SHA-256 verification
-6. ✅ Session management (keep user logged in)
-
-### Upcoming Features (Team Members)
-- Movie database integration
-- Watchlist management UI
-- Rating and review functionality
-- Search and filter features
+APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ---
 
 ## 📸 Screenshots
 
-*Coming soon...*
+| Login | Register | Watchlist | Add Movie |
+|-------|----------|-----------|-----------|
+| *screenshot* | *screenshot* | *screenshot* | *screenshot* |
+
+> Screenshots will be added after final UI testing.
 
 ---
 
 ## 🎓 Academic Information
 
-- **Module Code:** ICT3214
-- **Module Name:** Mobile Application Development
-- **Project Type:** Group Project
-- **University:** Rajarata University of Sri Lanka
-- **Faculty:** Faculty of Applied Sciences
-- **Department:** Department of Computing
+| Field | Details |
+|-------|---------|
+| **Module Code** | ICT3214 |
+| **Module Name** | Mobile Application Development |
+| **Project Type** | Group Project |
+| **Batch** | 21/22 |
+| **Semester** | Year 3, Semester 1 |
+| **Academic Year** | 2026 |
+| **University** | Rajarata University of Sri Lanka |
+| **Faculty** | Faculty of Applied Sciences |
+| **Department** | Department of Computing |
 
 ---
 
 ## 📄 License
 
-This project is developed for academic purposes at Department of Computing - Faculty of Applied Sciences - Rajarata University of Sri Lanka.
+This project is developed for academic purposes at the Department of Computing, Faculty of Applied Sciences, Rajarata University of Sri Lanka. It is part of the coursework for ICT3214 — Mobile Application Development.
 
 ---
 
 ## 🔗 Links
 
-- [Project Repository](https://github.com/sh13y/CineStack)
+- [GitHub Repository](https://github.com/sh13y/CineStack)
+- [Pull Requests](https://github.com/sh13y/CineStack/pulls)
 - [Issue Tracker](https://github.com/sh13y/CineStack/issues)
 
 ---
 
-**Last Updated:** February 9, 2026
+<div align="center">
+
+**CineStack** — Built with ☕ Java & 🎬 Passion  
+*ICT3214 Group Project — Rajarata University of Sri Lanka*
+
+</div>
