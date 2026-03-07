@@ -291,11 +291,9 @@ APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
 ## 📸 Screenshots
 
-| Login | Register | Watchlist | Add Movie |
-|-------|----------|-----------|-----------|
-| *screenshot* | *screenshot* | *screenshot* | *screenshot* |
-
-> Screenshots will be added after final UI testing.
+| Sign In | Sign Up | Home | Add Movie |
+|---------|---------|------|-----------|
+| ![Sign In](assets/sign_in.png) | ![Sign Up](assets/sign_up.png) | ![Home](assets/home.png) | ![Add Movie](assets/add_movie.png) |
 
 ---
 
