@@ -4,7 +4,7 @@
 
 <img src="assets/app_icon.png" alt="CineStack" width="120" />
 
-**ICT3214 – Mobile Application Development**  
+**ICT3214 - Mobile Application Development**  
 **Department of Computing - Faculty of Applied Sciences**  
 **Rajarata University of Sri Lanka**
 
@@ -36,7 +36,7 @@
 
 ## 📖 About the Project
 
-**CineStack** is a native Android application developed as the group project for the module **ICT3214 – Mobile Application Development** (Year 3, Semester 1).
+**CineStack** is a native Android application developed as the group project for the module **ICT3214 - Mobile Application Development** (Year 3, Semester 1).
 
 The app allows registered users to maintain a personal **movie watchlist**, add movies they have watched, write **short reviews**, and **search** through their collection. It features a complete **login and registration system** with secure password hashing, persistent sessions, and a modern dark-themed Material Design UI.
 
@@ -62,7 +62,7 @@ The app allows registered users to maintain a personal **movie watchlist**, add 
 - Secure **registration** with full input validation
 - **Login** using username or email
 - **SHA-256 password hashing** - passwords are never stored in plain text
-- **"Remember Me"** checkbox — controls auto-login on next app launch
+- **"Remember Me"** checkbox - controls auto-login on next app launch
 - **Auto-login** for returning users when Remember Me is enabled
 - **Logout** button on the main screen header
 
@@ -77,7 +77,7 @@ The app allows registered users to maintain a personal **movie watchlist**, add 
 - Instant filtering as the user types
 
 ### UI / UX
-- Modern **dark theme** with indigo/violet accent palette
+- Modern **dark theme** with lavender & golden-yellow accent palette (matching app icon)
 - **Material Design 3** components (TextInputLayout, MaterialButton, MaterialCardView)
 - Custom vector drawables and clean minimalist design
 - Responsive XML layouts with proper input validation feedback
@@ -197,7 +197,7 @@ app/src/main/
 | **SQL Injection Prevention** | All queries use parameterized placeholders (`?`) with `rawQuery()` / `ContentValues` |
 | **Input Validation** | Client-side validation for empty fields, email format, password length (≥ 6), username format (alphanumeric + underscore), and password confirmation match |
 | **Unique Constraints** | Database enforces `UNIQUE` on both `username` and `email` columns |
-| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` — stores login state, username, full name, user ID, and remember-me preference |
+| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` - stores login state, username, full name, user ID, and remember-me preference |
 | **Session Security** | Session is checked on app launch; unauthorized users are redirected to login; logout clears all session data; without Remember Me, session is cleared on next app restart |
 
 ---
