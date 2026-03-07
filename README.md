@@ -243,8 +243,7 @@ SessionManager.isLoggedIn() && rememberMe?
 | 5 | Login system with username/email authentication | `LoginActivity.java`, `activity_login.xml` |
 | 6 | Session management (SharedPreferences) | `SessionManager.java` |
 | 7 | Auto-login & "Remember Me" functionality | `LoginActivity.java`, `SessionManager.java` |
-| 8 | Modern dark theme UI overhaul & Material3 design | All layouts, drawables, `colors.xml`, `themes.xml` |
-| 9 | Logout button on main screen | `MainActivity.java`, `activity_main.xml`, `ic_logout.xml` |
+| 8 | Logout button on main screen | `MainActivity.java`, `activity_main.xml`, `ic_logout.xml` |
 
 ### P.G.P.W. Gunathilake - Index No: 5662
 
@@ -257,6 +256,7 @@ SessionManager.isLoggedIn() && rememberMe?
 | 5 | Movie search (SQLite LIKE query) | `MainActivity.java`, `DatabaseHelper.java` |
 | 6 | UI/UX design - original layouts & drawables | All layout XMLs, drawable resources |
 | 7 | Main screen layout & navigation | `activity_main.xml`, `menu_main.xml` |
+| 8 | Modern dark theme UI overhaul & Material3 design | All layouts, drawables, `colors.xml`, `themes.xml` |
 
 ---
 
