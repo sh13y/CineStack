@@ -67,7 +67,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/bg_search_gold"
+        android:background="@drawable/bg_search"
         android:hint="Search movies..."
         android:textColor="@color/text_primary"
         android:textColorHint="@color/text_hint"

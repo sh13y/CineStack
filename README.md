@@ -36,7 +36,7 @@
 
 **CineStack** is a native Android application developed as the group project for the module **ICT3214 – Mobile Application Development** (Year 3, Semester 1).
 
-The app allows registered users to maintain a personal **movie watchlist**, add movies they have watched, write **short reviews**, and **search** through their collection. It features a complete **login and registration system** with secure password hashing, persistent sessions, and a cinematic gold-themed UI.
+The app allows registered users to maintain a personal **movie watchlist**, add movies they have watched, write **short reviews**, and **search** through their collection. It features a complete **login and registration system** with secure password hashing, persistent sessions, and a modern dark-themed Material Design UI.
 
 > **Project Category:** 9. Movie Watchlist & Review App - *Focus: Entertainment preferences*
 
@@ -60,9 +60,9 @@ The app allows registered users to maintain a personal **movie watchlist**, add 
 - Secure **registration** with full input validation
 - **Login** using username or email
 - **SHA-256 password hashing** - passwords are never stored in plain text
-- **"Remember Me"** checkbox with persistent session via SharedPreferences
-- **Auto-login** for returning users (session check on app launch)
-- **Logout** from the overflow menu
+- **"Remember Me"** checkbox — controls auto-login on next app launch
+- **Auto-login** for returning users when Remember Me is enabled
+- **Logout** button on the main screen header
 
 ### Movie Watchlist (CRUD)
 - **Add** movies with title, genre, year, and review
@@ -75,8 +75,9 @@ The app allows registered users to maintain a personal **movie watchlist**, add 
 - Instant filtering as the user types
 
 ### UI / UX
-- Cinematic **gold-themed** Material Design layouts
-- Custom drawables and gradient backgrounds
+- Modern **dark theme** with indigo/violet accent palette
+- **Material Design 3** components (TextInputLayout, MaterialButton, MaterialCardView)
+- Custom vector drawables and clean minimalist design
 - Responsive XML layouts with proper input validation feedback
 
 ---
@@ -127,9 +128,12 @@ app/src/main/
 │   ├── activity_edit_movie.xml    # Edit movie form layout
 │   └── item_movie.xml             # Movie card item for RecyclerView
 │
-├── res/drawable/                   # Custom gold-themed drawables & backgrounds
+├── res/drawable/
+│   ├── bg_search.xml              # Search bar background shape
+│   └── ic_logout.xml              # Logout vector icon
+│
 ├── res/menu/
-│   └── menu_main.xml             # Overflow menu (logout)
+│   └── menu_main.xml             # Options menu
 ├── res/values/
 │   ├── colors.xml                # App color palette
 │   └── ids.xml                   # View ID declarations
@@ -191,8 +195,8 @@ app/src/main/
 | **SQL Injection Prevention** | All queries use parameterized placeholders (`?`) with `rawQuery()` / `ContentValues` |
 | **Input Validation** | Client-side validation for empty fields, email format, password length (≥ 6), username format (alphanumeric + underscore), and password confirmation match |
 | **Unique Constraints** | Database enforces `UNIQUE` on both `username` and `email` columns |
-| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` - stores login state, username, full name, and user ID |
-| **Session Security** | Session is checked on app launch; unauthorized users are redirected to login; logout clears all session data |
+| **Session Management** | `SessionManager` class wraps SharedPreferences under `CineStackSession` — stores login state, username, full name, user ID, and remember-me preference |
+| **Session Security** | Session is checked on app launch; unauthorized users are redirected to login; logout clears all session data; without Remember Me, session is cleared on next app restart |
 
 ---
 
@@ -202,7 +206,7 @@ app/src/main/
 App Launch
     │
     ▼
-SessionManager.isLoggedIn()?
+SessionManager.isLoggedIn() && rememberMe?
     │
     ├── YES ──► MainActivity (Watchlist)
     │               │
@@ -211,7 +215,7 @@ SessionManager.isLoggedIn()?
     │               ├── Add Movie ──► AddMovieActivity
     │               ├── Edit Movie ──► EditMovieActivity
     │               ├── Delete Movie
-    │               └── Logout ──► LoginActivity
+    │               └── Logout (header button) ──► LoginActivity
     │
     └── NO ───► LoginActivity
                     │
@@ -237,6 +241,8 @@ SessionManager.isLoggedIn()?
 | 5 | Login system with username/email authentication | `LoginActivity.java`, `activity_login.xml` |
 | 6 | Session management (SharedPreferences) | `SessionManager.java` |
 | 7 | Auto-login & "Remember Me" functionality | `LoginActivity.java`, `SessionManager.java` |
+| 8 | Modern dark theme UI overhaul & Material3 design | All layouts, drawables, `colors.xml`, `themes.xml` |
+| 9 | Logout button on main screen | `MainActivity.java`, `activity_main.xml`, `ic_logout.xml` |
 
 ### P.G.P.W. Gunathilake - Index No: 5662
 
@@ -247,7 +253,7 @@ SessionManager.isLoggedIn()?
 | 3 | Delete Movie functionality | `MovieAdapter.java` |
 | 4 | RecyclerView implementation for movie list | `MovieAdapter.java`, `Movie.java`, `item_movie.xml` |
 | 5 | Movie search (SQLite LIKE query) | `MainActivity.java`, `DatabaseHelper.java` |
-| 6 | UI/UX design - cinematic gold theme | All layout XMLs, drawable resources |
+| 6 | UI/UX design - original layouts & drawables | All layout XMLs, drawable resources |
 | 7 | Main screen layout & navigation | `activity_main.xml`, `menu_main.xml` |
 
 ---
@@ -325,7 +331,7 @@ This project is developed for academic purposes at the Department of Computing, 
 
 <div align="center">
 
-**CineStack** - Built with ☕ Java & 🎬 Passion  
+**CineStack** — Built with ☕ Java & 🎬 Passion  
 *ICT3214 Group Project - Rajarata University of Sri Lanka*
 
 </div>
