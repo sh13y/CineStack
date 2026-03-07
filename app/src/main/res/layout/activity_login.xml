@@ -17,11 +17,11 @@
 
         <!-- App Icon -->
         <ImageView
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:src="@mipmap/ic_launcher_round"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:src="@mipmap/ic_launcher_foreground"
             android:contentDescription="CineStack"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="10dp" />
 
         <!-- Title -->
         <TextView
