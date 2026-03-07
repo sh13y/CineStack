@@ -2,6 +2,8 @@
 
 <div align="center">
 
+<img src="assets/app_icon.png" alt="CineStack" width="120" />
+
 **ICT3214 – Mobile Application Development**  
 **Department of Computing - Faculty of Applied Sciences**  
 **Rajarata University of Sri Lanka**
@@ -329,7 +331,7 @@ This project is developed for academic purposes at the Department of Computing, 
 
 <div align="center">
 
-**CineStack** — Built with ☕ Java & 🎬 Passion  
+**CineStack** - Built with ☕ Java & 🎬 Passion  
 *ICT3214 Group Project - Rajarata University of Sri Lanka*
 
 </div>
