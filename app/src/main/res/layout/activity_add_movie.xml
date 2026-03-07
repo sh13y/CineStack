@@ -145,10 +145,10 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="Save Movie"
-            android:textColor="@color/white"
+            android:textColor="@color/star_text"
             android:textStyle="bold"
             android:textSize="15sp"
-            app:backgroundTint="@color/accent"
+            app:backgroundTint="@color/star"
             app:cornerRadius="12dp" />
 
     </LinearLayout>

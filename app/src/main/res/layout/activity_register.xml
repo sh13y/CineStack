@@ -179,10 +179,10 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Create Account"
-            android:textColor="@color/white"
+            android:textColor="@color/star_text"
             android:textStyle="bold"
             android:textSize="16sp"
-            app:backgroundTint="@color/accent"
+            app:backgroundTint="@color/star"
             app:cornerRadius="12dp"
             android:layout_marginBottom="24dp" />
 

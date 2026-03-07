@@ -96,10 +96,10 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="20dp"
         android:text="+ Add Movie"
-        android:textColor="@color/white"
+        android:textColor="@color/star_text"
         android:textStyle="bold"
         android:textSize="15sp"
-        app:backgroundTint="@color/accent"
+        app:backgroundTint="@color/star"
         app:cornerRadius="12dp" />
 
 </LinearLayout>
