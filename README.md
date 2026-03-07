@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="assets/app_icon.png" alt="CineStack" width="120" />
+<img src="assets/app_icon_foreground.webp" alt="CineStack" width="120" />
 
 **ICT3214 - Mobile Application Development**  
 **Department of Computing - Faculty of Applied Sciences**  
