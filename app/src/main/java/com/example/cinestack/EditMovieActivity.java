@@ -32,7 +32,7 @@ public class EditMovieActivity extends AppCompatActivity {
         movieId = getIntent().getIntExtra("id", -1);
         etTitle.setText(getIntent().getStringExtra("title"));
         etGenre.setText(getIntent().getStringExtra("genre"));
-        etYear.setText(getIntent().getStringExtra("year"));
+        etYear.setText(String.valueOf(getIntent().getIntExtra("year", 0)));
         etReview.setText(getIntent().getStringExtra("review"));
 
         btnUpdate.setOnClickListener(v -> {
