@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +26,21 @@ import com.google.android.material.textfield.TextInputLayout;
 public class RegisterActivity extends AppCompatActivity {
 
     // UI Components
-    private TextInputLayout tilFullName, tilUsername, tilEmail, tilPassword, tilConfirmPassword;
-    private TextInputEditText etFullName, etUsername, etEmail, etPassword, etConfirmPassword;
+    private TextInputLayout tilFullName, tilUsername, tilEmail, tilPassword, tilConfirmPassword, tilSecurityAnswer;
+    private TextInputEditText etFullName, etUsername, etEmail, etPassword, etConfirmPassword, etSecurityAnswer;
+    private Spinner spinnerSecurityQuestion;
     private Button btnRegister;
     private TextView tvLoginLink;
+
+    // Security questions list
+    private static final String[] SECURITY_QUESTIONS = {
+            "What is your pet's name?",
+            "What city were you born in?",
+            "What is your mother's maiden name?",
+            "What was the name of your first school?",
+            "What is your favorite movie?",
+            "What is your favorite book?"
+    };
 
     // Database Helper
     private DatabaseHelper databaseHelper;
@@ -57,6 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
         tilConfirmPassword = findViewById(R.id.tilConfirmPassword);
+        tilSecurityAnswer = findViewById(R.id.tilSecurityAnswer);
 
         // EditTexts
         etFullName = findViewById(R.id.etFullName);
@@ -64,6 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        etSecurityAnswer = findViewById(R.id.etSecurityAnswer);
+
+        // Security Question Spinner
+        spinnerSecurityQuestion = findViewById(R.id.spinnerSecurityQuestion);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, SECURITY_QUESTIONS);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSecurityQuestion.setAdapter(adapter);
 
         // Button and TextView
         btnRegister = findViewById(R.id.btnRegister);
@@ -107,10 +129,24 @@ public class RegisterActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
         String confirmPassword = etConfirmPassword.getText().toString();
+        String securityQuestion = SECURITY_QUESTIONS[spinnerSecurityQuestion.getSelectedItemPosition()];
+        String securityAnswer = etSecurityAnswer.getText().toString().trim();
 
         // Validate all inputs
         if (!validateInputs(fullName, username, email, password, confirmPassword)) {
             return; // Stop if validation fails
+        }
+
+        // Validate security answer
+        if (TextUtils.isEmpty(securityAnswer)) {
+            tilSecurityAnswer.setError("Security answer is required");
+            etSecurityAnswer.requestFocus();
+            return;
+        }
+        if (securityAnswer.length() < 2) {
+            tilSecurityAnswer.setError("Answer must be at least 2 characters");
+            etSecurityAnswer.requestFocus();
+            return;
         }
 
         // Check if username already exists
@@ -128,7 +164,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Attempt to register user
-        boolean isRegistered = databaseHelper.registerUser(username, email, password, fullName);
+        boolean isRegistered = databaseHelper.registerUser(username, email, password, fullName,
+                securityQuestion, securityAnswer);
 
         if (isRegistered) {
             // Registration successful
@@ -234,6 +271,7 @@ public class RegisterActivity extends AppCompatActivity {
         tilEmail.setError(null);
         tilPassword.setError(null);
         tilConfirmPassword.setError(null);
+        tilSecurityAnswer.setError(null);
     }
 
     /**

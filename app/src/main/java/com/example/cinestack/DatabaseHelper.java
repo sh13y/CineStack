@@ -15,7 +15,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "CineStack.db";
-    private static final int DATABASE_VERSION = 3; // 🔥 IMPORTANT: upgraded
+    private static final int DATABASE_VERSION = 4; // 🔥 IMPORTANT: upgraded
 
     // Users table
     private static final String TABLE_USERS = "users";
@@ -25,6 +25,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_FULL_NAME = "full_name";
     private static final String COLUMN_CREATED_AT = "created_at";
+    private static final String COLUMN_SECURITY_QUESTION = "security_question";
+    private static final String COLUMN_SECURITY_ANSWER = "security_answer";
 
     // Movies table
     private static final String TABLE_MOVIES = "movies";
@@ -43,7 +45,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_EMAIL + " TEXT NOT NULL UNIQUE, " +
                     COLUMN_PASSWORD + " TEXT NOT NULL, " +
                     COLUMN_FULL_NAME + " TEXT NOT NULL, " +
-                    COLUMN_CREATED_AT + " TEXT NOT NULL" +
+                    COLUMN_CREATED_AT + " TEXT NOT NULL, " +
+                    COLUMN_SECURITY_QUESTION + " TEXT NOT NULL, " +
+                    COLUMN_SECURITY_ANSWER + " TEXT NOT NULL" +
                     ")";
 
     // Create Movies Table (⭐ rating added)
@@ -103,12 +107,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // ================= USER METHODS =================
 
-    public boolean registerUser(String username, String email, String password, String fullName) {
+    public boolean registerUser(String username, String email, String password, String fullName,
+                                 String securityQuestion, String securityAnswer) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         String hashedPassword = hashPassword(password);
-        if (hashedPassword == null) return false;
+        String hashedAnswer = hashPassword(securityAnswer.toLowerCase().trim());
+        if (hashedPassword == null || hashedAnswer == null) return false;
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_USERNAME, username.toLowerCase().trim());
@@ -116,6 +122,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PASSWORD, hashedPassword);
         values.put(COLUMN_FULL_NAME, fullName.trim());
         values.put(COLUMN_CREATED_AT, getCurrentTimestamp());
+        values.put(COLUMN_SECURITY_QUESTION, securityQuestion);
+        values.put(COLUMN_SECURITY_ANSWER, hashedAnswer);
 
         long result = db.insert(TABLE_USERS, null, values);
         db.close();
@@ -219,6 +227,88 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return fullName;
+    }
+
+    /**
+     * Gets the security question for a given username or email
+     */
+    public String getSecurityQuestion(String usernameOrEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + COLUMN_SECURITY_QUESTION + " FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?",
+                new String[]{usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim()});
+
+        String question = null;
+        if (cursor.moveToFirst()) {
+            question = cursor.getString(0);
+        }
+
+        cursor.close();
+        db.close();
+        return question;
+    }
+
+    /**
+     * Verifies the security answer for a given username or email
+     */
+    public boolean verifySecurityAnswer(String usernameOrEmail, String answer) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String hashedAnswer = hashPassword(answer.toLowerCase().trim());
+
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS +
+                        " WHERE (" + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?) AND " +
+                        COLUMN_SECURITY_ANSWER + "=?",
+                new String[]{usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim(),
+                        hashedAnswer});
+
+        boolean valid = cursor.getCount() > 0;
+        cursor.close();
+        db.close();
+        return valid;
+    }
+
+    /**
+     * Updates password for a given username or email
+     */
+    public boolean updatePassword(String usernameOrEmail, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String hashedPassword = hashPassword(newPassword);
+        if (hashedPassword == null) return false;
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PASSWORD, hashedPassword);
+
+        // Try updating by username first
+        int result = db.update(TABLE_USERS, values,
+                COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?",
+                new String[]{usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim()});
+
+        db.close();
+        return result > 0;
+    }
+
+    /**
+     * Checks if a username or email exists in the database
+     */
+    public boolean checkUserExists(String usernameOrEmail) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?",
+                new String[]{usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim()});
+
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exists;
     }
 
     // ================= MOVIE METHODS =================
