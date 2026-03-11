@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CineStack">
         <activity
+            android:name=".ProfileActivity" />
+        <activity
             android:name=".EditMovieActivity"
             android:exported="false" />
         <activity

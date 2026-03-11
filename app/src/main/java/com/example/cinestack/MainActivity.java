@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -22,20 +23,22 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Movie> movieList;
     private DatabaseHelper databaseHelper;
     private SessionManager sessionManager;
-
     private EditText searchBar;
+    private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if user is logged in
+        // Check login
         sessionManager = new SessionManager(this);
         sessionManager.checkLogin();
 
+        // Database helper
         databaseHelper = new DatabaseHelper(this);
 
+        // RecyclerView setup
         recyclerView = findViewById(R.id.recyclerViewMovies);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -43,29 +46,41 @@ public class MainActivity extends AppCompatActivity {
         movieAdapter = new MovieAdapter(movieList, this);
         recyclerView.setAdapter(movieAdapter);
 
-        Button btnAddMovie = findViewById(R.id.btnAddMovie);
-        btnAddMovie.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, AddMovieActivity.class))
-        );
-
-        // Logout button
-        findViewById(R.id.btnLogout).setOnClickListener(v -> {
-            getSharedPreferences("UserSession", MODE_PRIVATE)
-                    .edit().clear().apply();
-            sessionManager.logoutUser();
-        });
-
-        // New search bar from your new XML
+        // Search bar
         searchBar = findViewById(R.id.searchBar);
         searchBar.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 searchMovies(s.toString());
             }
 
-            @Override public void afterTextChanged(Editable s) {}
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
+        // Bottom navigation
+        bottomNavigation = findViewById(R.id.bottomNavigation);
+        bottomNavigation.setSelectedItemId(R.id.nav_watchlist);
+
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_watchlist) {
+                return true;
+            } else if (id == R.id.nav_add) {
+                startActivity(new Intent(MainActivity.this, AddMovieActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (id == R.id.nav_profile) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            }
+
+            return false;
         });
 
         loadMovies();
@@ -107,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         int userId = getLoggedInUserId();
         if (userId == -1) return;
 
-        // if empty -> load all
         if (keyword == null || keyword.trim().isEmpty()) {
             loadMovies();
             return;
@@ -137,6 +151,4 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadMovies();
     }
-
-
 }

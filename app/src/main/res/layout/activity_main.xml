@@ -17,9 +17,8 @@
         android:paddingBottom="8dp">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
@@ -40,23 +39,6 @@
                 android:textSize="13sp"
                 android:layout_marginTop="2dp" />
         </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogout"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:padding="0dp"
-            app:icon="@drawable/ic_logout"
-            app:iconTint="@color/error"
-            app:iconSize="22dp"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:rippleColor="@color/error_surface"
-            android:contentDescription="Logout" />
-
     </LinearLayout>
 
     <!-- Search Bar -->
@@ -86,20 +68,16 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingTop="8dp"
-        android:paddingBottom="80dp" />
+        android:paddingBottom="8dp" />
 
-    <!-- Add Movie Button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddMovie"
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="+ Add Movie"
-        android:textColor="@color/star_text"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        app:backgroundTint="@color/star"
-        app:cornerRadius="12dp" />
+        android:layout_height="wrap_content"
+        android:background="@color/bg_input"
+        app:itemIconTint="@color/star"
+        app:itemTextColor="@color/text_primary"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

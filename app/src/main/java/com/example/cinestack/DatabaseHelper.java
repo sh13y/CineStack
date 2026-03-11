@@ -15,7 +15,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "CineStack.db";
-    private static final int DATABASE_VERSION = 3; // 🔥 IMPORTANT: upgraded
+    private static final int DATABASE_VERSION = 4;
 
     // Users table
     private static final String TABLE_USERS = "users";
@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_EMAIL = "email";
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_FULL_NAME = "full_name";
+    private static final String COLUMN_PROFILE_IMAGE = "profile_image";
     private static final String COLUMN_CREATED_AT = "created_at";
 
     // Movies table
@@ -35,7 +36,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_REVIEW = "review";
     private static final String COLUMN_USER_ID_FK = "user_id";
 
-    // Create Users Table
     private static final String CREATE_USERS_TABLE =
             "CREATE TABLE " + TABLE_USERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -43,10 +43,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_EMAIL + " TEXT NOT NULL UNIQUE, " +
                     COLUMN_PASSWORD + " TEXT NOT NULL, " +
                     COLUMN_FULL_NAME + " TEXT NOT NULL, " +
+                    COLUMN_PROFILE_IMAGE + " TEXT, " +
                     COLUMN_CREATED_AT + " TEXT NOT NULL" +
                     ")";
 
-    // Create Movies Table (⭐ rating added)
     private static final String CREATE_MOVIES_TABLE =
             "CREATE TABLE " + TABLE_MOVIES + " (" +
                     COLUMN_MOVIE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -76,7 +76,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // 🔐 Hash password
     private String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -85,7 +84,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
                 String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) hexString.append('0');
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
                 hexString.append(hex);
             }
             return hexString.toString();
@@ -104,7 +105,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // ================= USER METHODS =================
 
     public boolean registerUser(String username, String email, String password, String fullName) {
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         String hashedPassword = hashPassword(password);
@@ -115,6 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_EMAIL, email.toLowerCase().trim());
         values.put(COLUMN_PASSWORD, hashedPassword);
         values.put(COLUMN_FULL_NAME, fullName.trim());
+        values.put(COLUMN_PROFILE_IMAGE, "");
         values.put(COLUMN_CREATED_AT, getCurrentTimestamp());
 
         long result = db.insert(TABLE_USERS, null, values);
@@ -123,8 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean loginUser(String username, String password) {
-
+    public boolean loginUser(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String hashedPassword = hashPassword(password);
 
@@ -132,9 +132,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SELECT * FROM " + TABLE_USERS +
                         " WHERE (" + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?) AND " +
                         COLUMN_PASSWORD + "=?",
-                new String[]{username.toLowerCase().trim(),
-                        username.toLowerCase().trim(),
-                        hashedPassword});
+                new String[]{
+                        usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim(),
+                        hashedPassword
+                });
 
         boolean valid = cursor.getCount() > 0;
         cursor.close();
@@ -142,8 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return valid;
     }
 
-    public int getUserId(String username, String password) {
-
+    public int getUserId(String usernameOrEmail, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String hashedPassword = hashPassword(password);
 
@@ -151,9 +152,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SELECT " + COLUMN_ID + " FROM " + TABLE_USERS +
                         " WHERE (" + COLUMN_USERNAME + "=? OR " + COLUMN_EMAIL + "=?) AND " +
                         COLUMN_PASSWORD + "=?",
-                new String[]{username.toLowerCase().trim(),
-                        username.toLowerCase().trim(),
-                        hashedPassword});
+                new String[]{
+                        usernameOrEmail.toLowerCase().trim(),
+                        usernameOrEmail.toLowerCase().trim(),
+                        hashedPassword
+                });
 
         int userId = -1;
         if (cursor.moveToFirst()) {
@@ -164,67 +167,123 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return userId;
     }
-    // ✅ Check if username already exists
-    public boolean checkUsernameExists(String username) {
 
+    public boolean checkUsernameExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + " = ?",
+                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_USERNAME + "=?",
                 new String[]{username.toLowerCase().trim()}
         );
 
         boolean exists = cursor.moveToFirst();
         cursor.close();
         db.close();
-
         return exists;
     }
 
-    // ✅ Check if email already exists
     public boolean checkEmailExists(String email) {
-
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_EMAIL + " = ?",
+                "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_EMAIL + "=?",
                 new String[]{email.toLowerCase().trim()}
         );
 
         boolean exists = cursor.moveToFirst();
         cursor.close();
         db.close();
-
         return exists;
     }
 
-    /**
-     * Gets user's full name by username
-     * @param username Username to look up
-     * @return User's full name, or null if not found
-     */
-    public String getUserFullName(String username) {
+    public boolean isUsernameTaken(String username, int currentUserId) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT " + COLUMN_FULL_NAME + " FROM " + TABLE_USERS +
-                        " WHERE " + COLUMN_USERNAME + " = ?",
-                new String[]{username.toLowerCase().trim()});
+                "SELECT " + COLUMN_ID + " FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_ID + "!=?",
+                new String[]{username.toLowerCase().trim(), String.valueOf(currentUserId)}
+        );
 
-        String fullName = null;
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exists;
+    }
+
+    public boolean isEmailTaken(String email, int currentUserId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT " + COLUMN_ID + " FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_EMAIL + "=? AND " + COLUMN_ID + "!=?",
+                new String[]{email.toLowerCase().trim(), String.valueOf(currentUserId)}
+        );
+
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exists;
+    }
+
+    public Cursor getUserProfileById(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        return db.rawQuery(
+                "SELECT id, username, email, full_name, profile_image, created_at FROM users WHERE id=?",
+                new String[]{String.valueOf(userId)}
+        );
+    }
+
+    public boolean updateUserProfile(int userId, String username, String email, String password, String profileImage) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("username", username.toLowerCase().trim());
+        values.put("email", email.toLowerCase().trim());
+        values.put("profile_image", profileImage);
+
+        if (password != null && !password.trim().isEmpty()) {
+            String hashedPassword = hashPassword(password);
+            if (hashedPassword == null) {
+                db.close();
+                return false;
+            }
+            values.put("password", hashedPassword);
+        }
+
+        int result = db.update(
+                "users",
+                values,
+                "id=?",
+                new String[]{String.valueOf(userId)}
+        );
+
+        db.close();
+        return result > 0;
+    }
+
+    public int getMovieCountByUser(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_MOVIES + " WHERE " + COLUMN_USER_ID_FK + "=?",
+                new String[]{String.valueOf(userId)}
+        );
+
+        int count = 0;
         if (cursor.moveToFirst()) {
-            fullName = cursor.getString(0);
+            count = cursor.getInt(0);
         }
 
         cursor.close();
         db.close();
-        return fullName;
+        return count;
     }
 
     // ================= MOVIE METHODS =================
 
     public boolean insertMovie(String title, String genre, int year, String review, int userId) {
-
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -241,53 +300,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getMoviesByUser(int userId) {
-
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(
-                "SELECT * FROM " + TABLE_MOVIES +
-                        " WHERE " + COLUMN_USER_ID_FK + "=?",
-                new String[]{String.valueOf(userId)});
+                "SELECT * FROM " + TABLE_MOVIES + " WHERE " + COLUMN_USER_ID_FK + "=?",
+                new String[]{String.valueOf(userId)}
+        );
     }
 
     public boolean deleteMovie(int movieId) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-        int result = db.delete(TABLE_MOVIES,
+
+        int result = db.delete(
+                TABLE_MOVIES,
                 COLUMN_MOVIE_ID + "=?",
-                new String[]{String.valueOf(movieId)});
+                new String[]{String.valueOf(movieId)}
+        );
+
         db.close();
         return result > 0;
     }
 
-    public boolean updateMovie(int id, String title, String genre,
-                               String year, String review) {
-
+    public boolean updateMovie(int id, String title, String genre, String year, String review) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_TITLE, title);
-        values.put(COLUMN_GENRE, genre);
+        values.put(COLUMN_TITLE, title.trim());
+        values.put(COLUMN_GENRE, genre.trim());
         values.put(COLUMN_YEAR, year);
-        values.put(COLUMN_REVIEW, review);
+        values.put(COLUMN_REVIEW, review.trim());
 
-        int result = db.update(TABLE_MOVIES,
+        int result = db.update(
+                TABLE_MOVIES,
                 values,
                 COLUMN_MOVIE_ID + "=?",
-                new String[]{String.valueOf(id)});
+                new String[]{String.valueOf(id)}
+        );
 
         db.close();
         return result > 0;
     }
 
-
     public Cursor searchMovies(int userId, String keyword) {
-
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(
                 "SELECT * FROM " + TABLE_MOVIES +
-                        " WHERE " + COLUMN_USER_ID_FK + "=? AND " + COLUMN_TITLE + " LIKE ?",
+                        " WHERE " + COLUMN_USER_ID_FK + "=? AND " +
+                        COLUMN_TITLE + " LIKE ?",
                 new String[]{String.valueOf(userId), "%" + keyword + "%"}
         );
     }

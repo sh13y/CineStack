@@ -10,28 +10,33 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.database.Cursor;
+
+
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
- * LoginActivity - Handles user login authentication
- * Validates credentials against database and manages login sessions
- * 
- * @author ICT3214 Group Project
- * @version 1.0
+ * LoginActivity
+ *
+ * Handles:
+ * - user login
+ * - input validation
+ * - session creation
+ * - remember me logic
  */
 public class LoginActivity extends AppCompatActivity {
 
-    // UI Components
+    // UI components
     private TextInputLayout tilUsername, tilPassword;
     private EditText etUsername, etPassword;
     private CheckBox cbRememberMe;
     private Button btnLogin;
     private TextView tvRegisterLink;
 
-    // Database Helper and Session Manager
+    // Helper classes
     private DatabaseHelper databaseHelper;
     private SessionManager sessionManager;
 
@@ -40,52 +45,50 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize database helper and session manager
+        // Initialize helper classes
         databaseHelper = new DatabaseHelper(this);
         sessionManager = new SessionManager(this);
 
-        // Check if user is already logged in with Remember Me
+        // If user is already logged in and remember me is enabled,
+        // go directly to main screen
         if (sessionManager.isLoggedIn() && sessionManager.isRememberMe()) {
             redirectToMainActivity();
             return;
         } else if (sessionManager.isLoggedIn() && !sessionManager.isRememberMe()) {
-            // Previous session without remember me — clear it
+            // Clear session if remember me was not selected
             sessionManager.clearSession();
         }
 
-        // Initialize UI components
+        // Connect XML views
         initializeViews();
 
-        // Set click listeners
+        // Set button and text click listeners
         setClickListeners();
 
-        // Check if username was passed from registration
+        // Auto-fill username after successful registration
         checkRegistrationIntent();
     }
 
     /**
-     * Initialize all UI components
+     * Connect all views from XML
      */
     private void initializeViews() {
-        // TextInputLayouts
         tilUsername = findViewById(R.id.tilUsername);
         tilPassword = findViewById(R.id.tilPassword);
 
-        // EditTexts
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
 
-        // CheckBox and Button
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
         tvRegisterLink = findViewById(R.id.tvRegister);
     }
 
     /**
-     * Set click listeners for buttons and links
+     * Set click listeners
      */
     private void setClickListeners() {
-        // Login button click
+        // Login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Register link click - navigate to registration screen
+        // Register link
         tvRegisterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,53 +107,60 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Check if username was passed from registration (auto-fill)
+     * Auto-fill username if user came from RegisterActivity
      */
     private void checkRegistrationIntent() {
         Intent intent = getIntent();
         if (intent.hasExtra("registered_username")) {
             String username = intent.getStringExtra("registered_username");
             etUsername.setText(username);
-            etPassword.requestFocus(); // Focus on password field
+            etPassword.requestFocus();
         }
     }
 
     /**
-     * Main login method - validates credentials and creates session
+     * Handle login logic
      */
     private void loginUser() {
-        // Clear previous error messages
+        // Remove previous errors
         clearErrors();
 
-        // Get input values
-        String username = etUsername.getText().toString().trim();
+        // Read input values
+        String loginInput = etUsername.getText().toString().trim(); // username or email
         String password = etPassword.getText().toString();
         boolean rememberMe = cbRememberMe.isChecked();
 
-        // Validate inputs
-        if (!validateInputs(username, password)) {
-            return; // Stop if validation fails
+        // Validate fields
+        if (!validateInputs(loginInput, password)) {
+            return;
         }
 
-        // Verify credentials with database
-        int userId = databaseHelper.getUserId(username, password);
+        // Check credentials in database
+        int userId = databaseHelper.getUserId(loginInput, password);
 
         if (userId != -1) {
 
-            // Get user's full name for session
-            String fullName = databaseHelper.getUserFullName(username);
+            // Get full profile details using user ID
+            Cursor cursor = databaseHelper.getUserProfileById(userId);
 
-            // Always create session so the user stays logged in this run
-            sessionManager.createLoginSession(username, fullName, "", userId);
+            String realUsername = "";
+            String fullName = "";
+            String email = "";
 
-            // Remember Me controls whether auto-login persists after app restart
-            if (!rememberMe) {
-                sessionManager.setRememberMe(false);
-            } else {
-                sessionManager.setRememberMe(true);
+            if (cursor != null && cursor.moveToFirst()) {
+                realUsername = cursor.getString(cursor.getColumnIndexOrThrow("username"));
+                fullName = cursor.getString(cursor.getColumnIndexOrThrow("full_name"));
+                email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                cursor.close();
             }
 
-            // Also store user_id in UserSession for movie features
+            // Create session with real values from database
+            sessionManager.createLoginSession(realUsername, fullName, email, userId);
+
+            // Save remember me choice
+            sessionManager.setRememberMe(rememberMe);
+
+            // Also keep user id in UserSession because your movie screens use it
             getSharedPreferences("UserSession", MODE_PRIVATE)
                     .edit()
                     .putInt("user_id", userId)
@@ -168,31 +178,29 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Validates login input fields
-     * @return true if all validations pass, false otherwise
+     * Validate input fields
      */
-    private boolean validateInputs(String username, String password) {
-        
-        // Validate Username/Email
-        if (TextUtils.isEmpty(username)) {
+    private boolean validateInputs(String usernameOrEmail, String password) {
+
+        // Check username/email
+        if (TextUtils.isEmpty(usernameOrEmail)) {
             tilUsername.setError("Username or email is required");
             etUsername.requestFocus();
-
             return false;
         }
 
-        // Validate Password
+        // Check password
         if (TextUtils.isEmpty(password)) {
             tilPassword.setError("Password is required");
             etPassword.requestFocus();
             return false;
         }
 
-        return true; // All validations passed
+        return true;
     }
 
     /**
-     * Clears all error messages from input fields
+     * Clear previous validation errors
      */
     private void clearErrors() {
         tilUsername.setError(null);
@@ -200,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Redirect to MainActivity after successful login
+     * Go to MainActivity after successful login
      */
     private void redirectToMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -208,16 +216,15 @@ public class LoginActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish(); // Close login screen
+        finish();
     }
 
     /**
-     * Handle back button press
-     * Exit app instead of going back to previous activity
+     * Back button closes the app
      */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finishAffinity(); // Close all activities and exit app
+        finishAffinity();
     }
 }
