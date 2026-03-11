@@ -107,7 +107,20 @@
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             app:buttonTint="@color/accent"
-            android:layout_marginBottom="28dp" />
+            android:layout_marginBottom="8dp" />
+
+        <!-- Forgot Password Link -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:textColor="@color/accent_light"
+            android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_gravity="end"
+            android:layout_marginBottom="20dp" />
 
         <!-- Login Button -->
         <com.google.android.material.button.MaterialButton
