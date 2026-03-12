@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etUsername, etPassword;
     private CheckBox cbRememberMe;
     private Button btnLogin;
-    private TextView tvRegisterLink;
+    private TextView tvRegisterLink, tvForgotPassword;
 
     // Helper classes
     private DatabaseHelper databaseHelper;
@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         cbRememberMe = findViewById(R.id.cbRememberMe);
         btnLogin = findViewById(R.id.btnLogin);
         tvRegisterLink = findViewById(R.id.tvRegister);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
     }
 
     /**
@@ -101,6 +102,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Forgot password link click
+        tvForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
                 startActivity(intent);
             }
         });

@@ -17,6 +17,10 @@
             android:name=".EditMovieActivity"
             android:exported="false" />
         <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".AddMovieActivity"
             android:exported="false" /> <!-- Login Activity - LAUNCHER -->
         <activity

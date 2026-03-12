@@ -149,7 +149,7 @@
             android:id="@+id/tilConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
+            android:layout_marginBottom="14dp"
             app:boxBackgroundMode="outline"
             app:boxBackgroundColor="@color/bg_input"
             app:boxStrokeColor="@color/accent"
@@ -168,6 +168,58 @@
                 android:layout_height="wrap_content"
                 android:hint="Confirm Password"
                 android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Security Question Label -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Security Question"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="6dp" />
+
+        <!-- Security Question Spinner -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_spinner"
+            android:layout_marginBottom="14dp"
+            android:paddingHorizontal="4dp">
+
+            <Spinner
+                android:id="@+id/spinnerSecurityQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:popupBackground="@color/bg_surface"
+                android:backgroundTint="@color/accent" />
+        </FrameLayout>
+
+        <!-- Security Answer -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSecurityAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            app:boxBackgroundMode="outline"
+            app:boxBackgroundColor="@color/bg_input"
+            app:boxStrokeColor="@color/accent"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintTextColor="@color/accent_light"
+            android:textColorHint="@color/text_hint">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSecurityAnswer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your Answer"
+                android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/text_primary"
                 android:textSize="15sp" />

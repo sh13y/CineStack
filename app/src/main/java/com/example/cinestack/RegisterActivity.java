@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,27 +15,21 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
- * RegisterActivity
- *
- * Handles user registration:
- * - validates input fields
- * - checks duplicate username/email
- * - creates a new account in database
- * - redirects user to login screen after successful registration
+ * RegisterActivity - Handles user registration
+ * Validates input fields and creates new user accounts with secure password hashing
+ * 
+ * @author ICT3214 Group Project
+ * @version 1.0
  */
 public class RegisterActivity extends AppCompatActivity {
 
-    // Input layouts for showing validation errors
+    // UI Components
     private TextInputLayout tilFullName, tilUsername, tilEmail, tilPassword, tilConfirmPassword;
-
-    // Text input fields
     private TextInputEditText etFullName, etUsername, etEmail, etPassword, etConfirmPassword;
-
-    // Button and login link
     private Button btnRegister;
     private TextView tvLoginLink;
 
-    // Database helper
+    // Database Helper
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -45,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Initialize database helper
         databaseHelper = new DatabaseHelper(this);
 
-        // Connect XML views
+        // Initialize UI components
         initializeViews();
 
         // Set click listeners
@@ -53,60 +48,69 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Connect all views from XML
+     * Initialize all UI components
      */
     private void initializeViews() {
-        // Input layouts
+        // TextInputLayouts
         tilFullName = findViewById(R.id.tilFullName);
         tilUsername = findViewById(R.id.tilUsername);
         tilEmail = findViewById(R.id.tilEmail);
         tilPassword = findViewById(R.id.tilPassword);
         tilConfirmPassword = findViewById(R.id.tilConfirmPassword);
 
-        // Input fields
+        // EditTexts
         etFullName = findViewById(R.id.etFullName);
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
-        // Button and text link
+        // Button and TextView
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginLink = findViewById(R.id.tvLoginLink);
     }
 
     /**
-     * Set button and link click listeners
+     * Set click listeners for buttons and links
      */
     private void setClickListeners() {
-        // Register button
-        btnRegister.setOnClickListener(v -> registerUser());
+        // Register button click
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
 
-        // Login link
-        tvLoginLink.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+        // Login link click - navigate to login screen
+        tvLoginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to Login Activity (will be created next)
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish(); // Close registration screen
+            }
         });
     }
 
     /**
-     * Main registration logic
+     * Main registration method - validates inputs and creates user account
      */
     private void registerUser() {
-        // Clear old errors
+        // Clear previous error messages
         clearErrors();
 
-        // Read user input
+        // Get input values
         String fullName = etFullName.getText().toString().trim();
         String username = etUsername.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString();
         String confirmPassword = etConfirmPassword.getText().toString();
 
-        // Validate all fields
+        // Validate all inputs
         if (!validateInputs(fullName, username, email, password, confirmPassword)) {
-            return;
+            return; // Stop if validation fails
         }
 
         // Check if username already exists
@@ -123,110 +127,106 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Register user in database
+        // Attempt to register user
         boolean isRegistered = databaseHelper.registerUser(username, email, password, fullName);
 
         if (isRegistered) {
+            // Registration successful
             Toast.makeText(this, "Registration successful! Please login.", Toast.LENGTH_LONG).show();
-
-            // Go to login screen and prefill username
+            
+            // Navigate to Login Activity
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            intent.putExtra("registered_username", username);
+            intent.putExtra("registered_username", username); // Pass username to login screen
             startActivity(intent);
-            finish();
+            finish(); // Close registration screen
         } else {
+            // Registration failed
             Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
-     * Validate all input fields
+     * Validates all input fields
+     * @return true if all validations pass, false otherwise
      */
-    private boolean validateInputs(String fullName, String username, String email,
+    private boolean validateInputs(String fullName, String username, String email, 
                                    String password, String confirmPassword) {
-
-        // Full name validation
+        
+        // Validate Full Name
         if (TextUtils.isEmpty(fullName)) {
             tilFullName.setError("Full name is required");
             etFullName.requestFocus();
             return false;
         }
-
         if (fullName.length() < 3) {
             tilFullName.setError("Full name must be at least 3 characters");
             etFullName.requestFocus();
             return false;
         }
 
-        // Username validation
+        // Validate Username
         if (TextUtils.isEmpty(username)) {
             tilUsername.setError("Username is required");
             etUsername.requestFocus();
             return false;
         }
-
         if (username.length() < 3) {
             tilUsername.setError("Username must be at least 3 characters");
             etUsername.requestFocus();
             return false;
         }
-
         if (username.length() > 20) {
             tilUsername.setError("Username must not exceed 20 characters");
             etUsername.requestFocus();
             return false;
         }
-
         if (!username.matches("^[a-zA-Z0-9_]+$")) {
             tilUsername.setError("Username can only contain letters, numbers, and underscores");
             etUsername.requestFocus();
             return false;
         }
 
-        // Email validation
+        // Validate Email
         if (TextUtils.isEmpty(email)) {
             tilEmail.setError("Email is required");
             etEmail.requestFocus();
             return false;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             tilEmail.setError("Please enter a valid email address");
             etEmail.requestFocus();
             return false;
         }
 
-        // Password validation
+        // Validate Password
         if (TextUtils.isEmpty(password)) {
             tilPassword.setError("Password is required");
             etPassword.requestFocus();
             return false;
         }
-
         if (password.length() < 6) {
             tilPassword.setError("Password must be at least 6 characters");
             etPassword.requestFocus();
             return false;
         }
 
-        // Confirm password validation
+        // Validate Confirm Password
         if (TextUtils.isEmpty(confirmPassword)) {
             tilConfirmPassword.setError("Please confirm your password");
             etConfirmPassword.requestFocus();
             return false;
         }
-
         if (!password.equals(confirmPassword)) {
             tilConfirmPassword.setError("Passwords do not match");
             etConfirmPassword.requestFocus();
             return false;
         }
 
-        return true;
+        return true; // All validations passed
     }
 
     /**
-     * Clear all previous error messages
+     * Clears all error messages from input fields
      */
     private void clearErrors() {
         tilFullName.setError(null);
