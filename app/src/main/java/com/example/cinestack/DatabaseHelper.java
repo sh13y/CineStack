@@ -15,7 +15,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "CineStack.db";
-    private static final int DATABASE_VERSION = 4; // 🔥 IMPORTANT: upgraded
+    private static final int DATABASE_VERSION = 5; // 🔥 IMPORTANT: upgraded
 
     // Users table
     private static final String TABLE_USERS = "users";
@@ -27,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_CREATED_AT = "created_at";
     private static final String COLUMN_SECURITY_QUESTION = "security_question";
     private static final String COLUMN_SECURITY_ANSWER = "security_answer";
+    private static final String COLUMN_PROFILE_IMAGE = "profile_image";
 
     // Movies table
     private static final String TABLE_MOVIES = "movies";
@@ -47,7 +48,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     COLUMN_FULL_NAME + " TEXT NOT NULL, " +
                     COLUMN_CREATED_AT + " TEXT NOT NULL, " +
                     COLUMN_SECURITY_QUESTION + " TEXT NOT NULL, " +
-                    COLUMN_SECURITY_ANSWER + " TEXT NOT NULL" +
+                    COLUMN_SECURITY_ANSWER + " TEXT NOT NULL, " +
+                    COLUMN_PROFILE_IMAGE + " TEXT" +
                     ")";
 
     // Create Movies Table (⭐ rating added)
@@ -309,6 +311,96 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return exists;
+    }
+
+    // ================= PROFILE METHODS =================
+
+    /**
+     * Gets user profile data by user ID
+     */
+    public Cursor getUserProfileById(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_ID + "=?",
+                new String[]{String.valueOf(userId)});
+    }
+
+    /**
+     * Gets movie count for a user
+     */
+    public int getMovieCountByUser(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + TABLE_MOVIES + " WHERE " + COLUMN_USER_ID_FK + "=?",
+                new String[]{String.valueOf(userId)});
+
+        int count = 0;
+        if (cursor.moveToFirst()) {
+            count = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return count;
+    }
+
+    /**
+     * Checks if username is taken by another user (excludes current user)
+     */
+    public boolean isUsernameTaken(String username, int excludeUserId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_USERNAME + "=? AND " + COLUMN_ID + "!=?",
+                new String[]{username.toLowerCase().trim(), String.valueOf(excludeUserId)});
+
+        boolean taken = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return taken;
+    }
+
+    /**
+     * Checks if email is taken by another user (excludes current user)
+     */
+    public boolean isEmailTaken(String email, int excludeUserId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM " + TABLE_USERS +
+                        " WHERE " + COLUMN_EMAIL + "=? AND " + COLUMN_ID + "!=?",
+                new String[]{email.toLowerCase().trim(), String.valueOf(excludeUserId)});
+
+        boolean taken = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return taken;
+    }
+
+    /**
+     * Updates user profile (username, email, optional password, optional profile image)
+     */
+    public boolean updateUserProfile(int userId, String username, String email,
+                                     String password, String profileImage) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USERNAME, username.toLowerCase().trim());
+        values.put(COLUMN_EMAIL, email.toLowerCase().trim());
+        values.put(COLUMN_PROFILE_IMAGE, profileImage);
+
+        // Only update password if provided
+        if (password != null && !password.isEmpty()) {
+            String hashedPassword = hashPassword(password);
+            if (hashedPassword != null) {
+                values.put(COLUMN_PASSWORD, hashedPassword);
+            }
+        }
+
+        int result = db.update(TABLE_USERS, values,
+                COLUMN_ID + "=?",
+                new String[]{String.valueOf(userId)});
+
+        db.close();
+        return result > 0;
     }
 
     // ================= MOVIE METHODS =================
