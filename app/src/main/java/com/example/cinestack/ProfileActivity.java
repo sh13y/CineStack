@@ -193,15 +193,17 @@ public class ProfileActivity extends AppCompatActivity {
      * When this activity closes, app returns to dark mode
      */
     private void setupThemeSwitch() {
-        // Default state for this page: dark mode
-        switchTheme.setChecked(false);
+        boolean isLight =
+                AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO;
+
+        switchTheme.setChecked(isLight);
 
         switchTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // Switch app to light theme
+                // Light theme for whole app
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             } else {
-                // Switch app back to dark theme
+                // Dark theme for whole app
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
         });
@@ -345,10 +347,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     /**
      * When this activity closes, app goes back to dark theme
-     */
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-    }
+    }*/
 }
