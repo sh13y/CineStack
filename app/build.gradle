@@ -2,6 +2,15 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { stream ->
+        localProperties.load(stream)
+    }
+}
+def tmdbApiKey = localProperties.getProperty("TMDB_API_KEY", "")
+
 android {
     namespace 'com.example.cinestack'
     compileSdk {
@@ -16,7 +25,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "TMDB_API_KEY", '"' + (project.findProperty("TMDB_API_KEY") ?: "") + '"'
+        buildConfigField "String", "TMDB_API_KEY", '"' + tmdbApiKey + '"'
     }
 
     buildFeatures {
