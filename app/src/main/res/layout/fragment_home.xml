@@ -11,7 +11,7 @@
         android:paddingStart="20dp"
         android:paddingTop="20dp"
         android:paddingEnd="20dp"
-        android:text="Trending Movies & Series"
+        android:text="Trending Movies &amp; Series"
         android:textColor="@color/text_primary"
         android:textSize="24sp"
         android:textStyle="bold" />

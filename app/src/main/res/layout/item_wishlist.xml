@@ -61,7 +61,7 @@
                 android:id="@+id/btnReview"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="Rate & Review"
+                android:text="Rate &amp; Review"
                 android:textSize="11sp"
                 android:textColor="@color/star_text"
                 app:backgroundTint="@color/star"
