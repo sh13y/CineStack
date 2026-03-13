@@ -167,8 +167,15 @@ public class LoginActivity extends AppCompatActivity {
                     .apply();
 
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-
-            redirectToMainActivity();
+            if (databaseHelper.hasUserCategories(userId)) {
+                redirectToMainActivity();
+            } else {
+                Intent intent = new Intent(LoginActivity.this, CategorySelectionActivity.class);
+                intent.putExtra("user_id", userId);
+                intent.putExtra("from_login", true);
+                startActivity(intent);
+                finish();
+            }
 
         } else {
             tilPassword.setError("Invalid username/email or password");

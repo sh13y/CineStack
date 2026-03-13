@@ -168,14 +168,20 @@ public class RegisterActivity extends AppCompatActivity {
                 securityQuestion, securityAnswer);
 
         if (isRegistered) {
-            // Registration successful
-            Toast.makeText(this, "Registration successful! Please login.", Toast.LENGTH_LONG).show();
-            
-            // Navigate to Login Activity
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            intent.putExtra("registered_username", username); // Pass username to login screen
+            int userId = databaseHelper.getUserId(username, password);
+            if (userId == -1) {
+                Toast.makeText(this, "Account created, but category setup failed.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Toast.makeText(this, "Registration successful! Select your categories.", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(RegisterActivity.this, CategorySelectionActivity.class);
+            intent.putExtra("user_id", userId);
+            intent.putExtra("registered_username", username);
+            intent.putExtra("from_login", false);
             startActivity(intent);
-            finish(); // Close registration screen
+            finish();
         } else {
             // Registration failed
             Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show();
